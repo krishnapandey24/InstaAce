@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/webView"
+        android:title="@string/instagram"
+        android:icon="@drawable/ic_baseline_camera_alt_24"/>
+
+    <item android:id="@+id/home"
+        android:title="@string/home"
+        android:icon="@drawable/ic_baseline_home_24"/>
+
+    <item android:id="@+id/downloads"
+        android:title="@string/downloads"
+        android:icon="@drawable/ic_baseline_arrow_circle_down_24"/>
+</menu>

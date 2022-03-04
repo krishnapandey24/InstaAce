@@ -7,4 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="main">#30A6A6</color>
+    <color name="red">#cf0840</color>
+<!--    <color name="instagramBlue">#0095F6</color>-->
+    <color name="instagramBlue">#857d60dc</color>
+    <color name="buttonText">@color/white</color>
+    <color name="grey">#d6d7db</color>
+    <color name="grey2">#ececec</color>
+    <color name="backgroundColor">#f3f4f8</color>
+    <color name="editTextBackground">@color/white</color>
+    <color name="textcolor">@color/black</color>
 </resources>
