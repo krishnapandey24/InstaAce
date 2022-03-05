@@ -7,14 +7,16 @@ import android.os.Environment
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.network.InstagramAPI
+import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Inject
 
 
-class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI) {
+class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private var scope: CoroutineScope?) {
 
-    suspend fun fetchDownloadLink(url:String,map: String): List<Post>{
+    suspend fun fetchDownloadLink(url:String,map: String, coroutineScope: CoroutineScope): List<Post>{
         val postID= getPostCode(url)
+        scope=coroutineScope
         val items=instagramAPI.getData("p",postID,map).items[0]
         val posts= mutableListOf<Post>()
         if(items.media_type==8){
@@ -46,49 +48,65 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                 videoUrl=item.video_versions[0].url
                 videoUrl
             }
-//            8 -> {
-//                downloadCarousel(item)
-//                return 0
-//            }
             else -> {
                 extension=".jpg"
                 path= Constants.IMAGE_FOLDER_NAME
                 item.image_versions2.candidates[0].url
             }
         }
-        val uri: Uri = Uri.parse(downloadLink)
-        val request: DownloadManager.Request= DownloadManager.Request(uri)
-        val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
-        val filePath= Environment.DIRECTORY_DOWNLOADS.toString()+path+title
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setTitle(title)
+        val inAppPath=context.filesDir.absolutePath
+
+//        scope?.launch { download(downloadLink,item,extension,path) }
+//        scope?.launch { download(downloadLink,item,extension,inAppPath)}
+//        val uri: Uri = Uri.parse(downloadLink)
+//        val request: DownloadManager.Request= DownloadManager.Request(uri)
+//        val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
+//        val filePath= Environment.DIRECTORY_DOWNLOADS.toString()+path+title
+//        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+//        request.setTitle(title)
 //        request.setDestinationInExternalPublicDir(
 //            Environment.DIRECTORY_DOWNLOADS,
 //            path + title
 //        )
+//        (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+
+        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,item.caption.text,path,inAppPath,downloadLink,extension)
+    }
+
+    fun download(downloadLink: String?,username: String?,extension: String?,path: String?){
+        val uri: Uri = Uri.parse(downloadLink)
+        val request: DownloadManager.Request= DownloadManager.Request(uri)
+        val title=username +"_"+System.currentTimeMillis().toString() + extension
+        val filePath= Environment.DIRECTORY_DOWNLOADS.toString()+path+title
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        request.setTitle(title)
+        request.setDestinationInExternalPublicDir(
+            Environment.DIRECTORY_DOWNLOADS,
+            path + title
+        )
         (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
 
-        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,item.caption.text,filePath)
     }
     
-    private fun downloadPost(videoUrl: String?, path:String, extension:String,  downloadLink:String, item:Items, postID: String): Post{
-        val uri: Uri = Uri.parse(downloadLink)
-        val request: DownloadManager.Request= DownloadManager.Request(uri)
-        val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
-        val filePath= Environment.DIRECTORY_DOWNLOADS.toString()+path+title
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setTitle(title)
-        request.setDestinationInExternalFilesDir(context,"/InstaAce",path+title)
-//        request.setDestinationInExternalPublicDir(
-//            Environment.DIRECTORY_DOWNLOADS,
-//            path + title
-//        )
-        (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-
-        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,item.caption.text,filePath)
-    }
+//    private fun downloadPost(videoUrl: String?, path:String, extension:String,  downloadLink:String, item:Items, postID: String): Post{
+//        val uri: Uri = Uri.parse(downloadLink)
+//        val request: DownloadManager.Request= DownloadManager.Request(uri)
+//        val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
+//        val filePath= Environment.DIRECTORY_DOWNLOADS.toString()+path+title
+//        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+//        request.setTitle(title)
+//        request.setDestinationInExternalFilesDir(context,"/InstaAce",path+title)
+////        request.setDestinationInExternalPublicDir(
+////            Environment.DIRECTORY_DOWNLOADS,
+////            path + title
+////        )
+//        (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+//
+//        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,item.caption.text,filePath)
+//    }
 
     private fun getFolder(): File{
         val path= context.getExternalFilesDir(null)

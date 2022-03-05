@@ -1,12 +1,14 @@
 package com.omnicoder.instaace.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.database.PostDao
-import com.omnicoder.instaace.model.InstagramResponse
+import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.network.InstagramAPI
-import com.omnicoder.instaace.util.Downloader
 import com.omnicoder.instaace.util.PostDownloader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -16,13 +18,16 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
 //        return instagramAPI.getData(id,"jjghj")
 //    }
 
-    suspend fun downloadPost(url: String,map: String): List<Post>{
-        return postDownloader.fetchDownloadLink(url,map)
+    suspend fun fetchPost(url: String, map: String, coroutineScope: CoroutineScope): List<Post>{
+        return postDownloader.fetchDownloadLink(url,map,coroutineScope)
     }
 
-    fun getAllPosts(): LiveData<List<Post>>{
-        return postDao.getAllPosts()
+    fun download(downloadLink: String?, username:String?, extension: String?, path: String?){
+        postDownloader.download(downloadLink,username,extension,path)
     }
+
+    val getAllPost: List<Post> = postDao.getAllPosts()
+
 
     fun addPost(post: Post){
         return postDao.insert(post)

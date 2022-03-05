@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PostDao {
@@ -15,5 +16,5 @@ interface PostDao {
     fun delete(post: Post)
 
     @Query("SELECT * FROM post_table")
-    fun getAllPosts(): LiveData<List<Post>>
+    fun getAllPosts(): List<Post>
 }
