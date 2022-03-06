@@ -17,7 +17,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val instagramRepository: InstagramRepository) : ViewModel() {
     var posts = MutableLiveData<List<Post>>()
 
-    val allWords: List<Post> = instagramRepository.getAllPost
+//    val allWords: List<Post> = instagramRepository.getAllPost
 
 
     fun downloadPost(url: String, map: String) {
@@ -56,19 +56,31 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
 
     }
 
+    fun getPosts() {
+        viewModelScope.launch {
+            instagramRepository.getAllPost.value
+        }
+    }
 
-//    fun getDownloadedPosts() {
-//        viewModelScope.launch {
-//            withContext(Dispatchers.IO) {
-//                instagramRepository.getAllPost.asLiveData()
-//            }.let {
+    val allPosts= instagramRepository.getAllPost
+
+
+    fun getDownloadedPosts() {
+        Log.d("tagg","We got the valussse")
+        viewModelScope.launch {
+            Log.d("tagg","We got the valussse")
+            withContext(Dispatchers.IO) {
+                instagramRepository.getAllPost
+            }.let {
+                Log.d("tagg","We got the valussse")
+                posts.value=it.value
 //                if (it.value != null) {
 //                    Log.d("tagg","We got the value")
 //                    posts.value = it.value
 //                }
-//            }
-//        }
-//    }
+            }
+        }
+    }
 
 
 }

@@ -12,7 +12,7 @@ import com.omnicoder.instaace.database.Post
 import com.squareup.picasso.Picasso
 
 
-class DownloadViewAdapter(private val context: Context, private val  dataHolder: List<Post>) : RecyclerView.Adapter<DownloadViewAdapter.MyViewHolder>() {
+class DownloadViewAdapter( private val  dataHolder: List<Post>) : RecyclerView.Adapter<DownloadViewAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

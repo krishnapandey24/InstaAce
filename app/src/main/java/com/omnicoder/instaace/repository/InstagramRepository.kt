@@ -26,7 +26,7 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
         postDownloader.download(downloadLink,username,extension,path)
     }
 
-    val getAllPost: List<Post> = postDao.getAllPosts()
+    val getAllPost = postDao.getAllPosts()
 
 
     fun addPost(post: Post){
