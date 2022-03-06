@@ -2,6 +2,7 @@ package com.omnicoder.instaace.database
 
 import androidx.room.PrimaryKey
 import androidx.room.Entity
+import androidx.room.OnConflictStrategy
 
 @Entity(tableName = "post_table")
 data class Post(

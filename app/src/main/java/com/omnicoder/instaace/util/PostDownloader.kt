@@ -22,6 +22,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         if(items.media_type==8){
             for(item in items.carousel_media){
                 item.user=items.user
+                item.caption=items.caption
                 posts.add(downloadPost(postID,item))
             }
         }else{
