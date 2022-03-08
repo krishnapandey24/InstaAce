@@ -7,11 +7,19 @@
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#cf0840</item>
+        <item name="colorSecondary">@color/main</item>
         <item name="colorSecondaryVariant">#cf0840</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="circularImageView" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

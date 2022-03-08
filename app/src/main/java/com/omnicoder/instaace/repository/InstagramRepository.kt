@@ -18,15 +18,16 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
 //        return instagramAPI.getData(id,"jjghj")
 //    }
 
-    suspend fun fetchPost(url: String, map: String, coroutineScope: CoroutineScope): List<Post>{
-        return postDownloader.fetchDownloadLink(url,map,coroutineScope)
+    suspend fun fetchPost(url: String, map: String): List<Post>{
+        return postDownloader.fetchDownloadLink(url,map)
     }
 
-    fun download(downloadLink: String?, username:String?, extension: String?, path: String?){
-        postDownloader.download(downloadLink,username,extension,path)
+    fun download(downloadLink: String?, username:String?, extension: String?, path: String?, title: String?){
+        postDownloader.download(downloadLink,username,extension,path,title)
     }
 
     val getAllPost = postDao.getAllPosts()
+    val getFileCount= postDao.getFileCount()
 
 
     fun addPost(post: Post){

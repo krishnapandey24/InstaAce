@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="download_view_post_image_width_and_height">100dp</dimen>
+    <dimen name="download_view_post_image_width">100dp</dimen>
+    <dimen name="download_view_post_image_height">120dp</dimen>
     <dimen name="download_view_user_profile_pic_width_and_height">36dp</dimen>
 
 

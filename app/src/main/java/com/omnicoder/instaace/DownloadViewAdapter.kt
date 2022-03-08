@@ -1,18 +1,21 @@
 package com.omnicoder.instaace
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.database.Post
+import com.omnicoder.instaace.ui.activities.ViewPostActivity
 import com.squareup.picasso.Picasso
 
 
-class DownloadViewAdapter( private val  dataHolder: List<Post>) : RecyclerView.Adapter<DownloadViewAdapter.MyViewHolder>() {
+class DownloadViewAdapter( private val context:Context?,private val  dataHolder: List<Post>) : RecyclerView.Adapter<DownloadViewAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -26,6 +29,11 @@ class DownloadViewAdapter( private val  dataHolder: List<Post>) : RecyclerView.A
         val picasso= Picasso.get()
         picasso.load(post.image_url).into(holder.imageView)
         picasso.load(post.profile_pic_url).into(holder.profilePicView)
+        holder.layout.setOnClickListener{
+            val viewIntent = Intent(context, ViewPostActivity::class.java)
+            viewIntent.putExtra("path", post.image_url)
+            context?.startActivity(viewIntent)
+        }
         holder.usernameView.text = post.username
         holder.captionView.text= post.caption
     }
@@ -34,11 +42,12 @@ class DownloadViewAdapter( private val  dataHolder: List<Post>) : RecyclerView.A
         return dataHolder.size
     }
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val profilePicView: ImageView= itemView.findViewById(R.id.profile_pic_view)
         val usernameView: TextView = itemView.findViewById(R.id.username_view)
         val captionView: TextView = itemView.findViewById(R.id.caption_view)
+        val layout: ConstraintLayout= itemView.findViewById(R.id.constraintLayout)
     }
 
 }

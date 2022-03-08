@@ -39,7 +39,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun providePostDownloader(@ApplicationContext appContext : Context,instagramAPI: InstagramAPI): PostDownloader {
-        return PostDownloader(appContext,instagramAPI,null)
+        return PostDownloader(appContext,instagramAPI)
     }
 
 

@@ -13,6 +13,10 @@
     <color name="grey2">#ececec</color>
     <color name="backgroundColor">#ececec</color>
     <color name="editTextBackground">@color/white</color>
+    <color name="white_rectangle_background">#102F80ED</color>
+    <color name="textColor">#757A81</color>
+
+
 
 
 </resources>

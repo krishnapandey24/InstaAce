@@ -17,5 +17,6 @@ data class Post(
     val file_url: String?,
     val in_app_url:String?,
     val downloadLink:String?,
-    val extension:String?
+    val extension:String?,
+    val title:String?
 )

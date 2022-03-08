@@ -1,10 +1,15 @@
 package com.omnicoder.instaace.ui.activities
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -16,6 +21,9 @@ import java.io.File
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private var readPermission= false
+    private var writePermission= false
+    private lateinit var permissionsLauncher:ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +47,26 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
+
+    private fun updateOrRequestPermissions(){
+        val hasReadPermission= ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val hasWritePermission= ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val minSdk29= Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+        readPermission= hasReadPermission
+        writePermission= hasWritePermission || minSdk29
+        val permissionToRequest= mutableListOf<String>()
+        if(!writePermission){
+            permissionToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if(permissionToRequest.isNotEmpty()){
+            permissionsLauncher.launch(permissionToRequest.toTypedArray())
+        }
+        
+
+
+    }
+
+
 
 }
 

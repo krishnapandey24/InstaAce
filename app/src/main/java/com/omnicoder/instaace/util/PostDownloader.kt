@@ -1,22 +1,26 @@
 package com.omnicoder.instaace.util
 
 import android.app.DownloadManager
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.network.InstagramAPI
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import javax.inject.Inject
 
 
-class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private var scope: CoroutineScope?) {
+class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI) {
 
-    suspend fun fetchDownloadLink(url:String,map: String, coroutineScope: CoroutineScope): List<Post>{
+    suspend fun fetchDownloadLink(url:String,map: String): List<Post>{
         val postID= getPostCode(url)
-        scope=coroutineScope
         val items=instagramAPI.getData("p",postID,map).items[0]
         val posts= mutableListOf<Post>()
         if(items.media_type==8){
@@ -56,13 +60,16 @@ class PostDownloader @Inject constructor(private val context: Context,private va
             }
         }
         val inAppPath=context.filesDir.absolutePath
+        val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
+        Picasso.get().load("st")
+
 
 //        scope?.launch { download(downloadLink,item,extension,path) }
 //        scope?.launch { download(downloadLink,item,extension,inAppPath)}
 //        val uri: Uri = Uri.parse(downloadLink)
 //        val request: DownloadManager.Request= DownloadManager.Request(uri)
 //        val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
-//        val filePath= Environment.DIRECTORY_DOWNLOADS.toString()+path+title
+        val filePath= "storage/emulated/0/Download/"+path
 //        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
 //        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 //        request.setTitle(title)
@@ -72,21 +79,31 @@ class PostDownloader @Inject constructor(private val context: Context,private va
 //        )
 //        (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
 
-        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,item.caption.text,path,inAppPath,downloadLink,extension)
+        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,item.caption.text,filePath,inAppPath,downloadLink,extension,title)
     }
 
-    fun download(downloadLink: String?,username: String?,extension: String?,path: String?){
+    fun download(downloadLink: String?,username: String?,extension: String?,path: String?,title: String?){
         val uri: Uri = Uri.parse(downloadLink)
         val request: DownloadManager.Request= DownloadManager.Request(uri)
-        val title=username +"_"+System.currentTimeMillis().toString() + extension
         val filePath= Environment.DIRECTORY_DOWNLOADS.toString()+path+title
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setTitle(title)
-        request.setDestinationInExternalPublicDir(
-            Environment.DIRECTORY_DOWNLOADS,
-            path + title
-        )
+//        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.Q){
+//            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,Constants.APP_FOLDER_NAME+title)
+////            val resolver=context.contentResolver
+////            val values: ContentValues= ContentValues()
+////            values.put(MediaStore.MediaColumns.DISPLAY_NAME,title)
+////            values.put(MediaStore.MediaColumns.MIME_TYPE,"image/jpeg")
+////            values.put(MediaStore.MediaColumns.RELATIVE_PATH,Environment.DIRECTORY_PICTURES+Constants.APP_FOLDER_NAME)
+////            val imageURI= resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values)
+////
+//        }else {
+            request.setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                path + title
+            )
+//        }
         (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
 
     }

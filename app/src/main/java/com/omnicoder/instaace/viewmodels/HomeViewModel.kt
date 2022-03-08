@@ -1,7 +1,9 @@
 package com.omnicoder.instaace.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.repository.InstagramRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -12,32 +14,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val instagramRepository: InstagramRepository) : ViewModel() {
-    val allPosts= instagramRepository.getAllPost
+    val allPosts = instagramRepository.getAllPost
+    val fileCount = instagramRepository.getFileCount
+    val downloadDone= MutableLiveData<Boolean>()
 
 
     fun downloadPost(url: String, map: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                    instagramRepository.fetchPost(url, map, this)
-            }.let {
-                    withContext(Dispatchers.IO){
-                        for(post in it){
-                            this.launch { instagramRepository.addPost(post) }
-                            this.launch { instagramRepository.download(post.downloadLink,post.username,post.extension,post.file_url) }
-                            this.launch { instagramRepository.download(post.downloadLink,post.username,post.extension,post.in_app_url) }
-                        }
-                    }
+                val posts: List<Post> = instagramRepository.fetchPost(url, map)
+                for (post in posts) {
+                    this.launch { instagramRepository.download(post.downloadLink,post.username,post.extension,post.file_url,post.title) }
+                    this.launch { instagramRepository.addPost(post) }
                 }
+            }.let {
+                downloadDone.value=true
             }
         }
-
-
-
-    fun getPosts() {
-        viewModelScope.launch {
-            instagramRepository.getAllPost.value
-        }
     }
-
-
 }

@@ -17,4 +17,9 @@
     <color name="backgroundColor">#f3f4f8</color>
     <color name="editTextBackground">@color/white</color>
     <color name="textcolor">@color/black</color>
+    <color name="white_rectangle_background">@color/white</color>
+    <color name="textColor">#647380</color>
+
+
+
 </resources>
