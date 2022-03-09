@@ -17,4 +17,7 @@ interface PostDao {
 
     @Query("SELECT COUNT(postID) FROM post_table ")
     fun getFileCount(): LiveData<Int>
+
+    @Query("SELECT EXISTS(SELECT media_type FROM post_table WHERE link= :url)")
+    fun doesPostExits(url:String): Boolean
 }

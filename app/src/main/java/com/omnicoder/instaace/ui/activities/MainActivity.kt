@@ -1,11 +1,16 @@
 package com.omnicoder.instaace.ui.activities
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.Window
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -33,13 +38,23 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(this, R.id.fragmentContainerView)
         val bottomNavigationView: BottomNavigationView = binding.activityMainBottomNavigationView
         setupWithNavController(bottomNavigationView, navController)
+        onSharedIntent()
 
-        val downloadFolder= File(filesDir,"Download")
-        if(!downloadFolder.exists()){
-            downloadFolder.mkdirs()
-        }
-        Log.d("tagg","path: "+downloadFolder.absolutePath)
+
+
+
 //        window.navigationBarColor = resources.getColor(R.color.navigationBarColor)
+    }
+//
+//    override fun onWindowFocusChanged(hasFocus: Boolean) {
+//        super.onWindowFocusChanged(hasFocus)
+//        pasteTextFromClipboard()
+//
+//    }
+    private fun pasteTextFromClipboard() {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val item = clipboard.primaryClip?.getItemAt(0)
+        Log.d("tagg","Let say it is"+item?.text.toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -61,13 +76,23 @@ class MainActivity : AppCompatActivity() {
         if(permissionToRequest.isNotEmpty()){
             permissionsLauncher.launch(permissionToRequest.toTypedArray())
         }
-        
-
 
     }
 
+    private fun onSharedIntent(){
+        val intent:Intent= intent
+        if(intent.action.equals(Intent.ACTION_SEND)){
+            val receivedLink= intent.getStringExtra(Intent.EXTRA_TEXT)
+            if(receivedLink!=null){
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData:ClipData= ClipData.newPlainText("link",receivedLink)
+                clipboard.setPrimaryClip(clipData)
+            }
+        }
+    }
 
 
 }
+
 
 

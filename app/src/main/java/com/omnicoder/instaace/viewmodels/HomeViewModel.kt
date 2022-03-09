@@ -19,17 +19,26 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     val downloadDone= MutableLiveData<Boolean>()
 
 
-    fun downloadPost(url: String, map: String) {
+    fun downloadPost(url: String, map: String) : Boolean{
+        var postExits=false
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val posts: List<Post> = instagramRepository.fetchPost(url, map)
-                for (post in posts) {
-                    this.launch { instagramRepository.download(post.downloadLink,post.username,post.extension,post.file_url,post.title) }
-                    this.launch { instagramRepository.addPost(post) }
+                if(!instagramRepository.doesPostExits(url)){
+                    val posts: List<Post> = instagramRepository.fetchPost(url, map)
+                    for (post in posts) {
+                        this.launch {
+                            post.link=url
+                            instagramRepository.download(post.downloadLink,post.file_url,post.title)
+                        }
+                        this.launch { instagramRepository.addPost(post) }
+                    }
+                }else{
+                    postExits=true
                 }
             }.let {
                 downloadDone.value=true
             }
         }
+        return postExits
     }
 }

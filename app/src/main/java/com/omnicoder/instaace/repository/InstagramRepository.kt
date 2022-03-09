@@ -22,8 +22,15 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
         return postDownloader.fetchDownloadLink(url,map)
     }
 
-    fun download(downloadLink: String?, username:String?, extension: String?, path: String?, title: String?){
-        postDownloader.download(downloadLink,username,extension,path,title)
+    suspend fun doesPostExits(url: String): Boolean{
+        return postDao.doesPostExits(url)
+
+    }
+
+
+
+    fun download(downloadLink: String?, path: String?, title: String?){
+        postDownloader.download(downloadLink,path,title)
     }
 
     val getAllPost = postDao.getAllPosts()
