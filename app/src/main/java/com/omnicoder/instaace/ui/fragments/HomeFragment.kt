@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +20,6 @@ import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.databinding.HomeFragmentBinding
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.content.ClipData
-import android.view.Window
-import androidx.core.content.ContextCompat.getSystemService
 
 
 @AndroidEntryPoint
@@ -61,6 +58,11 @@ class HomeFragment : Fragment() {
                 Toast.makeText(context, "Invalid Link!", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.instagramButton.setOnClickListener{
+            val intent= Intent(Intent.ACTION_VIEW)
+            intent.setPackage("com.instagram.android")
+            startActivity(intent)
+        }
 
     }
 
@@ -72,7 +74,7 @@ class HomeFragment : Fragment() {
 
     private fun checkClipboard() {
         val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        if(clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN)==true){
+        if(clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN)==true && clipboard.hasPrimaryClip()){
             val item = clipboard.primaryClip?.getItemAt(0)
             val link=item?.text.toString()
             if(isInstagramLink(link)){
