@@ -1,6 +1,5 @@
 package com.omnicoder.instaace.di
 
-import android.app.Application
 import android.content.Context
 import com.omnicoder.instaace.network.InstagramAPI
 import com.omnicoder.instaace.util.Downloader
@@ -37,11 +36,10 @@ object NetworkModule {
         return Downloader(appContext)
     }
 
-
     @Provides
     @Singleton
-    fun providePostDownloader(@ApplicationContext appContext : Context,instagramAPI: InstagramAPI, application:Application): PostDownloader {
-        return PostDownloader(appContext,instagramAPI,application)
+    fun providePostDownloader(@ApplicationContext appContext : Context,instagramAPI: InstagramAPI): PostDownloader {
+        return PostDownloader(appContext,instagramAPI)
     }
 
 

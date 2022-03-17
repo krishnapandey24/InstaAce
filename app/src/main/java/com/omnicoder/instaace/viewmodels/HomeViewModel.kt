@@ -74,7 +74,7 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
             for(post in posts){
                 instagramRepository.download(post.downloadLink,post.file_url,post.title)
                 post.link=url
-//                instagramRepository.addPost(post)
+                instagramRepository.addPost(post)
             }
         }.join()
         return job.complete()
