@@ -18,6 +18,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.liulishuo.filedownloader.FileDownloader
+import com.liulishuo.filedownloader.connection.FileDownloadUrlConnection
 import com.omnicoder.instaace.R
 import com.omnicoder.instaace.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +41,15 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView = binding.activityMainBottomNavigationView
         setupWithNavController(bottomNavigationView, navController)
         onSharedIntent()
+        FileDownloader.setupOnApplicationOnCreate(application)
+            .connectionCreator(
+                FileDownloadUrlConnection.Creator(
+                    FileDownloadUrlConnection.Configuration()
+                        .connectTimeout(15000) // set connection timeout.
+                        .readTimeout(15000) // set read timeout.
+                )
+            )
+            .commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

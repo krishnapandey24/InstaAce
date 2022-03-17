@@ -31,7 +31,7 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
 
     fun download(downloadLink: String?, path: String?, title: String?){
         Log.d("tagg","Download added")
-        postDownloader.download(downloadLink,path,title)
+        postDownloader.downloadUsingFileDownload(downloadLink,path,title)
     }
 
     val getAllPost = postDao.getAllPosts()

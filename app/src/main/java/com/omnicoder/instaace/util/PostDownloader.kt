@@ -8,15 +8,40 @@ import android.util.Log
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.network.InstagramAPI
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloadQueueSet;
 import javax.inject.Inject
+
+import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloader
+import java.io.File
+import com.liulishuo.filedownloader.connection.FileDownloadUrlConnection
+
+
+
 
 
 class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI) {
+    init {
+        private void setupFileDowmloader() {
+            FileDownloader.setupOnApplicationOnCreate(this)
+                .connectionCreator(new FileDownloadUrlConnection
+                        .Creator(new FileDownloadUrlConnection.Configuration()
+                    .connectTimeout(15_000) // set connection timeout.
+                    .readTimeout(15_000) // set read timeout.
+                        ))
+                .commit();
+        }
+    }
+
+
+    val downloadListener: FileDownloadListener= createListener();
+
+
 
     suspend fun fetchDownloadLink(url:String,map: String): List<Post>{
         val postID= getPostCode(url)
         val items=instagramAPI.getData("p",postID,map).items[0]
-        Log.d("WeCheck", ("let ems how you"+items.toString()+items==null).toString())
         val posts= mutableListOf<Post>()
         if(items.media_type==8){
             for(item in items.carousel_media){
@@ -91,8 +116,95 @@ class PostDownloader @Inject constructor(private val context: Context,private va
     }
 
 
-    private fun downloadUsingFileDownload(){
+    fun downloadUsingFileDownload(downloadLink: String?,path: String?,title: String?){
+        FileDownloader.getImpl().create(downloadLink)
+            .setPath(Environment.DIRECTORY_DOWNLOADS+ File.separator+path)
+            .setCallbackProgressTimes(300)
+            .setMinIntervalUpdateSpeed(400)
+            .setListener(createListener())
+            .start();
 
     }
+
+//    private fun createListener(): FileDownloadListener {
+//
+//
+//    }
+
+    private fun createListener(): FileDownloadListener {
+        return object : FileDownloadListener() {
+            override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                if(task.listener != downloadListener){
+                    return;
+                }
+
+
+            }
+
+            override fun connected(task: BaseDownloadTask, etag: String, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
+                super.connected(task, etag, isContinue, soFarBytes, totalBytes)
+                if(task.listener != downloadListener){
+                    return;
+                }
+
+
+            }
+
+            override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                if (task.listener !== downloadListener) {
+                    return
+                }
+//                progressPb.setProgress(progressPb.getProgress() + 1);
+//                progressTv.setText("progress: " + progressPb.getProgress());
+//                progressInfoTv.append((int)task.getTag() + " | ");
+            }
+
+            override fun blockComplete(task: BaseDownloadTask) {
+                if (task.listener !== downloadListener) {
+                    return
+                }
+            }
+
+            override fun retry(task: BaseDownloadTask,ex: Throwable,retryingTimes: Int,soFarBytes: Int) {
+                super.retry(task, ex, retryingTimes, soFarBytes)
+                if (task.listener !== downloadListener) {
+                    return
+                }
+
+            }
+
+            override fun completed(task: BaseDownloadTask) {
+
+            }
+
+            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun warn(task: BaseDownloadTask?) {
+                TODO("Not yet implemented")
+            }
+
+
+        }
+    }
+
+    private fun setupFileDowmloader() {
+        FileDownloader.setupOnApplicationOnCreate()
+            .connectionCreator(
+                FileDownloadUrlConnection.Creator(
+                    FileDownloadUrlConnection.Configuration()
+                        .connectTimeout(15000) // set connection timeout.
+                        .readTimeout(15000) // set read timeout.
+                )
+            )
+            .commit()
+    }
+
+
 }
 
