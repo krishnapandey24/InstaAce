@@ -20,19 +20,41 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaAce">
         <activity
-            android:name=".ui.activities.ViewPostActivity"
+            android:name=".ui.activities.InstagramLoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"
+
+            />
+        <activity
+            android:name=".ui.activities.FirstStartActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.activities.ViewPostActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity
             android:name=".ui.activities.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+
+
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/*" />
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

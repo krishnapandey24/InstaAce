@@ -22,7 +22,7 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
         return postDownloader.fetchDownloadLink(url,map)
     }
 
-    suspend fun doesPostExits(url: String): Boolean{
+    fun doesPostExits(url: String): Boolean{
         return postDao.doesPostExits(url)
 
     }
@@ -30,6 +30,7 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
 
 
     fun download(downloadLink: String?, path: String?, title: String?){
+        Log.d("tagg","Download added")
         postDownloader.download(downloadLink,path,title)
     }
 
@@ -38,16 +39,10 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
 
 
     fun addPost(post: Post){
+        Log.d("tagg","Save added")
         return postDao.insert(post)
     }
 
-//    suspend fun DownloadPost(url:String){
-//        postDownloader.
-//    }
 
-//    suspend fun download(url:String){
-//        val url2="https://scontent-bom1-2.cdninstagram.com/v/t50.2886-16/272077774_1046570922554985_4726103676935762530_n.mp4?_nc_ht=scontent-bom1-2.cdninstagram.com&_nc_cat=109&_nc_ohc=eZOngSvcf18AX8XOe-5&edm=AABBvjUBAAAA&ccb=7-4&oe=61F108E4&oh=00_AT_vSrwyhFLSIwzkJb5t8NMdXh8hez_P4k-I2IoiwcTMbg&_nc_sid=83d603"
-//        downloader.download(url2,"lol")
-//    }
 
 }

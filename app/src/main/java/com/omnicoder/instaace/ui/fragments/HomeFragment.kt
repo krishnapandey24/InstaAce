@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.DownloadViewAdapter
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.databinding.HomeFragmentBinding
+import com.omnicoder.instaace.ui.activities.FirstStartActivity
+import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,18 +42,22 @@ class HomeFragment : Fragment() {
         setOnClickListeners()
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
         cookies= sharedPreferences?.getString("loginCookies","lol") ?: "lol"
+//        cookies="lol"
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
-            checkClipboard()
+            if(cookies!="lol") {
+                checkClipboard()
+            }
         }
     }
 
     private fun setOnClickListeners(){
+        binding.faqButton.setOnClickListener{
+            startActivity(Intent(context,InstagramLoginActivity::class.java))
+        }
         binding.downloadButton.setOnClickListener{
             val postLink=binding.editText.text.toString()
             if(isInstagramLink(postLink)){
-                if(download(postLink)){
-                    binding.progressBar.visibility=View.VISIBLE
-                }
+                download(postLink)
                 hideKeyboard()
             }else{
                 binding.editText.text.clear()
@@ -66,10 +72,13 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun download(link:String): Boolean{
-        val download=viewModel.downloadPost(link, cookies)
-        viewModel.downloadDone.value=false
-        return !download
+    private fun download(link:String){
+        if(cookies=="lol"){
+            startActivity(Intent(context,FirstStartActivity::class.java))
+            activity?.finish()
+        }
+        binding.progressBar.visibility=View.VISIBLE
+        viewModel.downloadPosts(link, cookies)
     }
 
     private fun checkClipboard() {
@@ -78,10 +87,8 @@ class HomeFragment : Fragment() {
             val item = clipboard.primaryClip?.getItemAt(0)
             val link=item?.text.toString()
             if(isInstagramLink(link)){
-                if(download(link)){
-                    binding.editText.setText(link)
-                    binding.progressBar.visibility=View.VISIBLE
-                }
+                binding.editText.setText(link)
+                download(link)
             }
         }
     }
@@ -99,12 +106,19 @@ class HomeFragment : Fragment() {
             }
         }
         viewModel.downloadDone.observe(this){
-            if(it==true){
+            if(it){
+                binding.progressBar.visibility=View.GONE
+                viewModel.downloadDone.value=false
+                binding.editText.text.clear()
+            }
+        }
+
+        viewModel.postExits.observe(this){
+            if (it){
                 binding.progressBar.visibility=View.GONE
                 binding.editText.text.clear()
-                viewModel.downloadDone.value=false
+                viewModel.postExits.value=false
             }
-
         }
     }
 

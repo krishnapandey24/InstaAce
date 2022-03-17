@@ -39,22 +39,6 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView = binding.activityMainBottomNavigationView
         setupWithNavController(bottomNavigationView, navController)
         onSharedIntent()
-
-
-
-
-//        window.navigationBarColor = resources.getColor(R.color.navigationBarColor)
-    }
-//
-//    override fun onWindowFocusChanged(hasFocus: Boolean) {
-//        super.onWindowFocusChanged(hasFocus)
-//        pasteTextFromClipboard()
-//
-//    }
-    private fun pasteTextFromClipboard() {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val item = clipboard.primaryClip?.getItemAt(0)
-        Log.d("tagg","Let say it is"+item?.text.toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -90,7 +74,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
 }
 

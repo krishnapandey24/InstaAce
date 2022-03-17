@@ -13,7 +13,7 @@ data class Post(
     val profile_pic_url: String,
     val image_url: String,
     val video_url: String?,
-    val caption: String,
+    val caption: String?,
     val file_url: String?,
     val in_app_url:String?,
     val downloadLink:String?,

@@ -13,7 +13,7 @@
         android:layout_height="20dp"
         android:layout_marginTop="-7.5dp"
         android:indeterminate="true"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -61,12 +61,12 @@
         android:layout_marginEnd="23dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_instagram_logo"
-        app:layout_constraintEnd_toStartOf="@+id/itemLayout"
+        app:layout_constraintEnd_toStartOf="@+id/faqButton"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
     <ImageButton
-        android:id="@+id/itemLayout"
+        android:id="@+id/faqButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"

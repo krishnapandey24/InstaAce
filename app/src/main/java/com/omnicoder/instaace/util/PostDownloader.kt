@@ -57,7 +57,8 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         val inAppPath=context.filesDir.absolutePath
         val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
         val filePath= Environment.DIRECTORY_DOWNLOADS+path
-        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,item.caption.text,filePath,inAppPath,downloadLink,extension,title,null)
+        val caption: String?= item.caption?.text
+        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,caption,filePath,inAppPath,downloadLink,extension,title,null)
     }
 
     fun download(downloadLink: String?,path: String?,title: String?){
@@ -87,6 +88,11 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         }
         val length = url.length
         return url.substring(length - 11, length)
+    }
+
+
+    private fun downloadUsingFileDownload(){
+
     }
 }
 

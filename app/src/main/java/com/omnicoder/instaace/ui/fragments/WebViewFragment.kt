@@ -44,16 +44,7 @@ class WebViewFragment : Fragment() {
 
         }
         myWebView.loadUrl("https://www.instagram.com/accounts/login/")
-        binding.saveCookies.setOnClickListener {
-            val map = getCookieMap()
-            var mapInString = map.toString()
-            mapInString = mapInString.replace("{", "")
-            mapInString = mapInString.replace("}", "")
-            mapInString = mapInString.replace(",", ";")
-            mapInString.trim()
-            val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
-            sharedPreferences?.edit()?.putString("loginCookies", mapInString)?.apply()
-        }
+
 
     }
     private fun getCookieMap(): Map<String,String> {
