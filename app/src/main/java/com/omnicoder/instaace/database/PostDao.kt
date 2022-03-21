@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(post: Post)
+    fun insertPost(post: Post)
 
     @Delete
     fun delete(post: Post)
@@ -20,4 +20,11 @@ interface PostDao {
 
     @Query("SELECT EXISTS(SELECT media_type FROM post_table WHERE link= :url)")
     fun doesPostExits(url:String): Boolean
+
+    @Query("SELECT * FROM carousel_table WHERE postID= :postID")
+    fun getCarousel(postID:String): LiveData<List<Carousel>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCarousel(carousel: Carousel)
+
 }

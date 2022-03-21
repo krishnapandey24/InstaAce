@@ -2,7 +2,6 @@ package com.omnicoder.instaace
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,13 +28,14 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         val picasso= Picasso.get()
         picasso.load(post.image_url).into(holder.imageView)
         picasso.load(post.profile_pic_url).into(holder.profilePicView)
-        holder.layout.setOnClickListener{
+        holder.layout.setOnClickListener {
             val viewIntent = Intent(context, ViewPostActivity::class.java)
             viewIntent.putExtra("path", post.image_url)
             context?.startActivity(viewIntent)
         }
         holder.usernameView.text = post.username
-        holder.captionView.text= post.caption
+        holder.captionView.text = post.caption
+
     }
 
     override fun getItemCount(): Int {

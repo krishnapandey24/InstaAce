@@ -5,28 +5,48 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.Post
+import com.omnicoder.instaace.database.PostDao
 import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.network.InstagramAPI
 import javax.inject.Inject
 
 
-class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI) {
+class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private val postDao:PostDao) {
 
-    suspend fun fetchDownloadLink(url:String,map: String): List<Post>{
+    suspend fun fetchDownloadLink(url:String,map: String): Long{
         val postID= getPostCode(url)
         val items=instagramAPI.getData("p",postID,map).items[0]
-        val posts= mutableListOf<Post>()
+        val post: Post
+        var downloadId: Long = 0
         if(items.media_type==8){
-            for(item in items.carousel_media){
-                item.user=items.user
-                item.caption=items.caption
-                posts.add(downloadPost(postID,item))
+            for((index,item) in items.carousel_media.withIndex()){
+                if(index==0) {
+                    item.user = items.user
+                    item.caption = items.caption
+                    val currentPost = downloadPost(postID, item)
+                    currentPost.isCarousel=true
+                    downloadId =download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
+                    currentPost.link=url
+                    postDao.insertPost(currentPost)
+                }else{
+                    item.user = items.user
+                    item.caption = items.caption
+                    val currentPost = downloadPost(postID, item)
+                    downloadId =download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
+                    val carousel=Carousel(0,postID,item.media_type,currentPost.image_url,currentPost.video_url,currentPost.file_url,currentPost.in_app_url,currentPost.downloadLink,currentPost.extension,currentPost.title)
+                    postDao.insertCarousel(carousel)
+                }
             }
         }else{
-            posts.add(downloadPost(postID,instagramAPI.getData("p",postID,map).items[0]))
+            post=downloadPost(postID,items)
+            post.link=url
+            postDao.insertPost(post)
+            downloadId=download(post.downloadLink,post.file_url,post.title)
+            Log.d("tagg","IN post downloader $downloadId")
         }
-        return posts
+        return downloadId
     }
 
 
@@ -57,20 +77,21 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         val title=item.user.username +"_"+System.currentTimeMillis().toString() + extension
         val filePath= Environment.DIRECTORY_DOWNLOADS+path
         val caption: String?= item.caption?.text
-        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,caption,filePath,inAppPath,downloadLink,extension,title,null)
+
+        return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,caption,filePath,inAppPath,downloadLink,extension,title,null,false)
     }
 
-    fun download(downloadLink: String?,path: String?,title: String?){
+    fun download(downloadLink: String?, path: String?, title: String?): Long {
         val uri: Uri = Uri.parse(downloadLink)
-        val request: DownloadManager.Request= DownloadManager.Request(uri)
+        val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setTitle(title)
-            request.setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS,
-                path + title
-            )
-        (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+        request.setDestinationInExternalPublicDir(
+            Environment.DIRECTORY_DOWNLOADS,
+            path + title
+        )
+        return (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
     }
 
 
@@ -88,6 +109,10 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         val length = url.length
         return url.substring(length - 11, length)
     }
+
+
+
+
 
 
 

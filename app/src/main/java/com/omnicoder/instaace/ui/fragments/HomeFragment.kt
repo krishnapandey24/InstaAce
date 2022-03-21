@@ -2,9 +2,6 @@ package com.omnicoder.instaace.ui.fragments
 
 import android.app.Activity
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,33 +19,63 @@ import com.omnicoder.instaace.ui.activities.FirstStartActivity
 import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import android.app.DownloadManager
+import android.content.*
+import android.util.Log
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+open class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: HomeFragmentBinding
     private lateinit var cookies: String
+    protected var downloadID:Long =69
+    private var onComplete:BroadcastReceiver?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding= HomeFragmentBinding.inflate(inflater,container,false)
-        return binding.root
+            Log.d("tagg", "ON cReate view got called")
+            binding = HomeFragmentBinding.inflate(inflater, container, false)
+            return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+            super.onViewCreated(view, savedInstanceState)
+        Log.d("tagg","ON view created  view got called")
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         observeData(context)
         setOnClickListeners()
+
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
         cookies= sharedPreferences?.getString("loginCookies","lol") ?: "lol"
-//        cookies="lol"
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
             if(cookies!="lol") {
-                checkClipboard()
+//                checkClipboard()
             }
         }
+
+
+      startBroadcastReceiver()
     }
+
+    private fun startBroadcastReceiver(){
+        Log.d("tagg","startBroadcastReceiver")
+        val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                Log.d("tagg","We recived a braodcast")
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                Log.d("tagg","the id we got"+id+"the id we had"+downloadID)
+                if (downloadID == id) {
+                    Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
+                    binding.progressBar.visibility=View.GONE
+                }
+            }
+        }
+
+        activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+
+    }
+
 
     private fun setOnClickListeners(){
         binding.faqButton.setOnClickListener{
@@ -78,7 +105,8 @@ class HomeFragment : Fragment() {
             activity?.finish()
         }
         binding.progressBar.visibility=View.VISIBLE
-        viewModel.downloadPosts(link, cookies)
+        viewModel.downloadPost(link, cookies)
+        binding.editText.text.clear()
     }
 
     private fun checkClipboard() {
@@ -105,13 +133,7 @@ class HomeFragment : Fragment() {
                 binding.noDownloadsTextView.visibility=View.INVISIBLE
             }
         }
-        viewModel.downloadDone.observe(this){
-            if(it){
-                binding.progressBar.visibility=View.GONE
-                viewModel.downloadDone.value=false
-                binding.editText.text.clear()
-            }
-        }
+
 
         viewModel.postExits.observe(this){
             if (it){
@@ -120,6 +142,18 @@ class HomeFragment : Fragment() {
                 viewModel.postExits.value=false
             }
         }
+
+        viewModel.downloadID.observe(this){
+            Log.d("tagg","Download id changed $it")
+            if(it>0){
+                downloadID=it
+            }else{
+                binding.progressBar.visibility=View.GONE
+            }
+
+        }
+
+
     }
 
     private fun isInstagramLink(link: String): Boolean {
@@ -153,11 +187,33 @@ class HomeFragment : Fragment() {
     }
 
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if(onComplete != null) {
+            activity?.unregisterReceiver(onComplete)
+        }
+    }
 
 
+    override fun onStart() {
+        super.onStart()
+        Log.d("tagg","Start got called")
+    }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d("tagg","Sresume")
+    }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d("tagg","paise")
 
+    }
 
+    override fun onStop() {
+        super.onStop()
+        Log.d("tagg","Sstop")
 
+    }
 }
