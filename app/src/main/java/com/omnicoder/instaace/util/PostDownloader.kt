@@ -44,7 +44,6 @@ class PostDownloader @Inject constructor(private val context: Context,private va
             post.link=url
             postDao.insertPost(post)
             downloadId=download(post.downloadLink,post.file_url,post.title)
-            Log.d("tagg","IN post downloader $downloadId")
         }
         return downloadId
     }

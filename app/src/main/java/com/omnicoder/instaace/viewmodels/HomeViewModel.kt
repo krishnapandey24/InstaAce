@@ -28,11 +28,10 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
         Log.d("tagg","this got called")
         viewModelScope.launch(Dispatchers.IO) {
             var downloadId: Long=990;
-            val postDoesNotExits= true //withContext(Dispatchers.IO){!doesPostExits(url)}
+            val postDoesNotExits= withContext(Dispatchers.IO){!doesPostExits(url)}
             if(postDoesNotExits){
                 val downloadID:Long =  instagramRepository.fetchPost(url,map)
                 downloadId=downloadID
-                Log.d("tagg","IN home view model $downloadId")
             }
             downloadID.postValue(downloadId)
         }

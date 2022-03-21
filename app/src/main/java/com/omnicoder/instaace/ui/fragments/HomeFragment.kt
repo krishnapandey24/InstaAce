@@ -33,15 +33,12 @@ open class HomeFragment : Fragment() {
     private var onComplete:BroadcastReceiver?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-            Log.d("tagg", "ON cReate view got called")
-            binding = HomeFragmentBinding.inflate(inflater, container, false)
-            return binding.root
-
+        binding = HomeFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-        Log.d("tagg","ON view created  view got called")
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         observeData(context)
         setOnClickListeners()
@@ -50,16 +47,9 @@ open class HomeFragment : Fragment() {
         cookies= sharedPreferences?.getString("loginCookies","lol") ?: "lol"
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
             if(cookies!="lol") {
-//                checkClipboard()
+                checkClipboard()
             }
         }
-
-
-      startBroadcastReceiver()
-    }
-
-    private fun startBroadcastReceiver(){
-        Log.d("tagg","startBroadcastReceiver")
         val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 Log.d("tagg","We recived a braodcast")
@@ -75,7 +65,6 @@ open class HomeFragment : Fragment() {
         activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
     }
-
 
     private fun setOnClickListeners(){
         binding.faqButton.setOnClickListener{
@@ -195,25 +184,4 @@ open class HomeFragment : Fragment() {
     }
 
 
-    override fun onStart() {
-        super.onStart()
-        Log.d("tagg","Start got called")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("tagg","Sresume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("tagg","paise")
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("tagg","Sstop")
-
-    }
 }
