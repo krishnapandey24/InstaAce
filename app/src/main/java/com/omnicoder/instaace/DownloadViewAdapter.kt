@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,6 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         }
         holder.usernameView.text = post.username
         holder.captionView.text = post.caption
-
     }
 
     override fun getItemCount(): Int {
@@ -49,5 +49,7 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         val captionView: TextView = itemView.findViewById(R.id.caption_view)
         val layout: ConstraintLayout= itemView.findViewById(R.id.constraintLayout)
     }
+
+
 
 }

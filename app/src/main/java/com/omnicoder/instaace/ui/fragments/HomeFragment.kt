@@ -19,17 +19,17 @@ import com.omnicoder.instaace.ui.activities.FirstStartActivity
 import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.app.DownloadManager
 import android.content.*
 import android.util.Log
 
 
 @AndroidEntryPoint
 open class HomeFragment : Fragment() {
+    private lateinit var downloadIdInterface: DownloadIdInterface
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: HomeFragmentBinding
     private lateinit var cookies: String
-    protected var downloadID:Long =69
+    private var downloadID:Long =69
     private var onComplete:BroadcastReceiver?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -38,11 +38,10 @@ open class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         observeData(context)
         setOnClickListeners()
-
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
         cookies= sharedPreferences?.getString("loginCookies","lol") ?: "lol"
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
@@ -50,19 +49,6 @@ open class HomeFragment : Fragment() {
                 checkClipboard()
             }
         }
-        val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                Log.d("tagg","We recived a braodcast")
-                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                Log.d("tagg","the id we got"+id+"the id we had"+downloadID)
-                if (downloadID == id) {
-                    Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
-                    binding.progressBar.visibility=View.GONE
-                }
-            }
-        }
-
-        activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
     }
 
@@ -93,7 +79,7 @@ open class HomeFragment : Fragment() {
             startActivity(Intent(context,FirstStartActivity::class.java))
             activity?.finish()
         }
-        binding.progressBar.visibility=View.VISIBLE
+        downloadIdInterface.startProgressBar()
         viewModel.downloadPost(link, cookies)
         binding.editText.text.clear()
     }
@@ -125,10 +111,11 @@ open class HomeFragment : Fragment() {
 
 
         viewModel.postExits.observe(this){
+            Log.d("tagg","value changes it is : "+it)
             if (it){
-                binding.progressBar.visibility=View.GONE
                 binding.editText.text.clear()
                 viewModel.postExits.value=false
+                downloadIdInterface.stopProgressBar()
             }
         }
 
@@ -136,10 +123,8 @@ open class HomeFragment : Fragment() {
             Log.d("tagg","Download id changed $it")
             if(it>0){
                 downloadID=it
-            }else{
-                binding.progressBar.visibility=View.GONE
+                downloadIdInterface.setId(it)
             }
-
         }
 
 
@@ -183,5 +168,14 @@ open class HomeFragment : Fragment() {
         }
     }
 
+    interface DownloadIdInterface{
+        fun setId(id:Long)
+        fun startProgressBar()
+        fun stopProgressBar()
+    }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        downloadIdInterface= context as DownloadIdInterface
+    }
 }

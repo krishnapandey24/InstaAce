@@ -4,7 +4,6 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.database.PostDao
@@ -13,8 +12,10 @@ import com.omnicoder.instaace.network.InstagramAPI
 import javax.inject.Inject
 
 
-class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private val postDao:PostDao) {
 
+
+
+class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private val postDao:PostDao) {
     suspend fun fetchDownloadLink(url:String,map: String): Long{
         val postID= getPostCode(url)
         val items=instagramAPI.getData("p",postID,map).items[0]
@@ -108,6 +109,9 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         val length = url.length
         return url.substring(length - 11, length)
     }
+
+
+
 
 
 
