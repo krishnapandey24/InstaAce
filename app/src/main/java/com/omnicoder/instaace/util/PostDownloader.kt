@@ -85,7 +85,6 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         val uri: Uri = Uri.parse(downloadLink)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setTitle(title)
         request.setDestinationInExternalPublicDir(
             Environment.DIRECTORY_DOWNLOADS,

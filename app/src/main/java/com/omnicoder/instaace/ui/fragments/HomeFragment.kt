@@ -1,6 +1,7 @@
 package com.omnicoder.instaace.ui.fragments
 
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,12 +26,11 @@ import android.util.Log
 
 @AndroidEntryPoint
 open class HomeFragment : Fragment() {
-    private lateinit var downloadIdInterface: DownloadIdInterface
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: HomeFragmentBinding
     private lateinit var cookies: String
-    private var downloadID:Long =69
-    private var onComplete:BroadcastReceiver?=null
+    private var downloadID:Long =0
+    private lateinit var onComplete:BroadcastReceiver
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
@@ -49,6 +49,17 @@ open class HomeFragment : Fragment() {
                 checkClipboard()
             }
         }
+        onComplete= object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                if (downloadID == id) {
+                    Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
+                    binding.progressBar.visibility= View.GONE
+                }
+            }
+        }
+
+        activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
     }
 
@@ -79,7 +90,7 @@ open class HomeFragment : Fragment() {
             startActivity(Intent(context,FirstStartActivity::class.java))
             activity?.finish()
         }
-        downloadIdInterface.startProgressBar()
+        binding.progressBar.visibility= View.VISIBLE
         viewModel.downloadPost(link, cookies)
         binding.editText.text.clear()
     }
@@ -111,19 +122,18 @@ open class HomeFragment : Fragment() {
 
 
         viewModel.postExits.observe(this){
-            Log.d("tagg","value changes it is : "+it)
+            Log.d("tagg","Download id changed $it")
             if (it){
                 binding.editText.text.clear()
                 viewModel.postExits.value=false
-                downloadIdInterface.stopProgressBar()
+                binding.progressBar.visibility= View.GONE
             }
         }
 
         viewModel.downloadID.observe(this){
-            Log.d("tagg","Download id changed $it")
+            Log.d("tagg","Download jjjjjid changed $it")
             if(it>0){
                 downloadID=it
-                downloadIdInterface.setId(it)
             }
         }
 
@@ -163,19 +173,6 @@ open class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if(onComplete != null) {
-            activity?.unregisterReceiver(onComplete)
-        }
-    }
-
-    interface DownloadIdInterface{
-        fun setId(id:Long)
-        fun startProgressBar()
-        fun stopProgressBar()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        downloadIdInterface= context as DownloadIdInterface
+        activity?.unregisterReceiver(onComplete)
     }
 }

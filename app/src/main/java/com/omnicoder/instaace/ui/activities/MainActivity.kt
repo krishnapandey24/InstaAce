@@ -1,16 +1,16 @@
 package com.omnicoder.instaace.ui.activities
 
 import android.Manifest
-import android.app.DownloadManager
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.view.View
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -19,22 +19,17 @@ import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.omnicoder.instaace.R
 import com.omnicoder.instaace.databinding.ActivityMainBinding
-import com.omnicoder.instaace.ui.fragments.HomeFragment
-import com.omnicoder.instaace.util.PostDownloader
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),HomeFragment.DownloadIdInterface {
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var readPermission= false
     private var writePermission= false
     private lateinit var permissionsLauncher:ActivityResultLauncher<Array<String>>
-    var downloadId: Long=0
-    private lateinit var onComplete:BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("tagg","on create")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -42,18 +37,11 @@ class MainActivity : AppCompatActivity(),HomeFragment.DownloadIdInterface {
         val bottomNavigationView: BottomNavigationView = binding.activityMainBottomNavigationView
         setupWithNavController(bottomNavigationView, navController)
         onSharedIntent()
-        onComplete= object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (downloadId == id) {
-                    Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
-                    binding.progressBar.visibility= View.GONE
-                }
-            }
+        permissionsLauncher= registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
+            readPermission= permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: readPermission
+            readPermission= permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] ?: writePermission
         }
-        registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        binding.progressBar.visibility=View.GONE
-        Log.d("tagg","We registered the recicivner")
+        updateOrRequestPermissions()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -72,9 +60,13 @@ class MainActivity : AppCompatActivity(),HomeFragment.DownloadIdInterface {
         if(!writePermission){
             permissionToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
+        if(!readPermission){
+            permissionToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
         if(permissionToRequest.isNotEmpty()){
             permissionsLauncher.launch(permissionToRequest.toTypedArray())
         }
+
 
     }
 
@@ -89,40 +81,6 @@ class MainActivity : AppCompatActivity(),HomeFragment.DownloadIdInterface {
             }
         }
     }
-
-    override fun setId(id: Long) {
-        downloadId=id
-    }
-
-    override fun startProgressBar() {
-        binding.progressBar.visibility=View.VISIBLE
-    }
-
-    override fun stopProgressBar(){
-        binding.progressBar.visibility= View.GONE
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("tagg","resume")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("tagg","stop")
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("tagg","destroy")
-        unregisterReceiver(onComplete)
-
-    }
-
-
-
-
 }
 
 
