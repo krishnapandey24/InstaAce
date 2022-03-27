@@ -10,25 +10,62 @@ import androidx.appcompat.app.AppCompatActivity
 import com.omnicoder.instaace.databinding.ActivityViewPostBinding
 import com.omnicoder.instaace.util.SharedStorageMedia
 import com.omnicoder.instaace.util.sdk29AndUp
+import com.squareup.picasso.Picasso
 
 
 class ViewPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivityViewPostBinding
+    private var viewMore= true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityViewPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val name:String= intent.getStringExtra("name") ?: "lol"
-        val mediaType= intent.getIntExtra("media_type",1)
+        val post: Bundle?= intent.extras
+        val name:String= post?.getString("name") ?: "lol"
+        val mediaType= post?.getInt("media_type",1)
+        val caption= post?.getString("caption") ?: ""
+        val username= post?.getString("username")
+        val profilePicture= post?.getString("profilePicture")
         if(mediaType==1){
             binding.videoView.visibility= View.GONE
+            binding.imageView.visibility= View.VISIBLE
             loadPhoto(name)
         }else{
+            binding.videoView.visibility= View.VISIBLE
             binding.imageView.visibility= View.GONE
             loadVideo(name)
         }
+        binding.captionView.text=caption
+        Picasso.get().load(profilePicture).into(binding.profilePicView)
+        binding.usernameView.text= username
+        setOnClickListeners()
+
 
     }
+    private fun setOnClickListeners(){
+        val viewMore2 = "View More"
+        val viewLess = "View Less"
+        binding.viewMore.setOnClickListener {
+            if (viewMore) {
+                binding.captionView.maxLines = 70
+                binding.viewMore.text = viewLess
+            } else {
+                binding.captionView.maxLines = 5
+                binding.viewMore.text = viewMore2
+            }
+            viewMore = !viewMore
+        }
+        binding.backButton.setOnClickListener{
+            finish()
+        }
+
+
+
+
+
+
+    }
+
 
     private fun loadPhoto(name:String){
         val collection= sdk29AndUp {

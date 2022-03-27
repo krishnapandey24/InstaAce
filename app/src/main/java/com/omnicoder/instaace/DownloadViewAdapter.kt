@@ -2,11 +2,11 @@ package com.omnicoder.instaace
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -31,9 +31,13 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         picasso.load(post.profile_pic_url).into(holder.profilePicView)
         holder.layout.setOnClickListener {
             val viewIntent = Intent(context, ViewPostActivity::class.java)
-            viewIntent.putExtra("path", post.image_url)
-            viewIntent.putExtra("name",post.title)
-            viewIntent.putExtra("media_type",post.media_type)
+            val postDetail= Bundle()
+            postDetail.putString("name",post.title)
+            postDetail.putInt("media_type",post.media_type)
+            postDetail.putString("caption",post.caption)
+            postDetail.putString("username",post.username)
+            postDetail.putString("profilePicture",post.profile_pic_url)
+            viewIntent.putExtras(postDetail)
             context?.startActivity(viewIntent)
         }
         holder.usernameView.text = post.username
