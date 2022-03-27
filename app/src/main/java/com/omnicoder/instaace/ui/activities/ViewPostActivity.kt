@@ -11,11 +11,20 @@ import com.omnicoder.instaace.databinding.ActivityViewPostBinding
 import com.omnicoder.instaace.util.SharedStorageMedia
 import com.omnicoder.instaace.util.sdk29AndUp
 import com.squareup.picasso.Picasso
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.view.MenuInflater
+import androidx.appcompat.widget.PopupMenu
+import com.omnicoder.instaace.R
+import com.omnicoder.instaace.util.Constants
+import java.lang.Exception
 
 
 class ViewPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivityViewPostBinding
     private var viewMore= true
+    private lateinit var uri:Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityViewPostBinding.inflate(layoutInflater)
@@ -26,6 +35,8 @@ class ViewPostActivity : AppCompatActivity() {
         val caption= post?.getString("caption") ?: ""
         val username= post?.getString("username")
         val profilePicture= post?.getString("profilePicture")
+        val instagramURL=post?.getString("instagram_url") ?: Constants.INSTAGRAM_HOMEPAGE_LINK
+        var isImage=true
         if(mediaType==1){
             binding.videoView.visibility= View.GONE
             binding.imageView.visibility= View.VISIBLE
@@ -34,15 +45,16 @@ class ViewPostActivity : AppCompatActivity() {
             binding.videoView.visibility= View.VISIBLE
             binding.imageView.visibility= View.GONE
             loadVideo(name)
+            isImage=false
         }
         binding.captionView.text=caption
         Picasso.get().load(profilePicture).into(binding.profilePicView)
         binding.usernameView.text= username
-        setOnClickListeners()
+        setOnClickListeners(isImage,instagramURL)
 
 
     }
-    private fun setOnClickListeners(){
+    private fun setOnClickListeners(isImage:Boolean,instagramUrl: String){
         val viewMore2 = "View More"
         val viewLess = "View Less"
         binding.viewMore.setOnClickListener {
@@ -58,6 +70,49 @@ class ViewPostActivity : AppCompatActivity() {
         binding.backButton.setOnClickListener{
             finish()
         }
+
+        binding.repost.setOnClickListener{
+            if(instagramIsInstalled()){
+                repost()
+            }
+        }
+
+        binding.menu.setOnClickListener{
+            val popup = PopupMenu(this, it)
+            val inflater: MenuInflater = popup.menuInflater
+            inflater.inflate(R.menu.view_post_menu, popup.menu)
+            popup.setOnMenuItemClickListener { menuItem ->
+                when(menuItem.itemId){
+                    R.id.openInInstagram-> {
+
+
+                    }
+                    R.id.details-> {
+
+                    }
+                    R.id.delete ->{
+
+                    }
+                }
+                true
+            }
+            popup.show()
+
+        }
+
+        binding.share.setOnClickListener{
+            val intent = Intent(Intent.ACTION_SEND)
+            val intentType=if(isImage){
+                "image/jpeg"
+            }else{
+                "video/mp4"
+            }
+            intent.type = intentType
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            startActivity(Intent.createChooser(intent, "Share"))
+        }
+
+
 
 
 
@@ -104,7 +159,8 @@ class ViewPostActivity : AppCompatActivity() {
             photos.toList()
         } ?: listOf()
         if(photos.isNotEmpty()){
-            binding.imageView.setImageURI(photos[0].contentUri)
+            uri=photos[0].contentUri
+            binding.imageView.setImageURI(uri)
         }
 
     }
@@ -146,9 +202,28 @@ class ViewPostActivity : AppCompatActivity() {
             photos.toList()
         } ?: listOf()
        if(photos.isNotEmpty()){
+           uri=photos[0].contentUri
            binding.videoView.setMediaController(MediaController(this@ViewPostActivity))
-           binding.videoView.setVideoURI(photos[0].contentUri)
+           binding.videoView.setVideoURI(uri)
            binding.videoView.start()
        }
     }
+
+    private fun repost() {
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "video/*"
+        share.setPackage(Constants.INSTAGRAM)
+        share.putExtra(Intent.EXTRA_STREAM, uri)
+        startActivity(Intent.createChooser(share, "Share to"))
+    }
+
+    private fun instagramIsInstalled():Boolean{
+        return try {
+            packageManager.getPackageInfo(Constants.INSTAGRAM, PackageManager.GET_ACTIVITIES)
+            true
+        }catch (e:Exception){
+            false
+        }
+    }
+
 }

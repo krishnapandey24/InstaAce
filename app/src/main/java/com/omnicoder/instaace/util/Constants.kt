@@ -11,5 +11,7 @@ object Constants {
     const val DOWNLOAD_FOLDER="/Download/"
     const val INSTAGRAM_SAVE_LOGIN_LINK="https://www.instagram.com/accounts/onetap/?next=%2F"
     const val INSTAGRAM_HOMEPAGE_LINK="https://www.instagram.com/"
+    const val INSTAGRAM="com.instagram.android"
+
 
 }

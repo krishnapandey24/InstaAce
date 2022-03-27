@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/openInInstagram"
+        android:title="@string/open_in_instagram"
+        android:icon="@drawable/ic_baseline_open_in_new_24"/>
+    <item android:id="@+id/details"
+        android:title="@string/detail"
+        android:icon="@drawable/ic_baseline_info_24"/>
+    <item android:id="@+id/delete"
+        android:title="@string/delete"
+        android:icon="@drawable/ic_baseline_delete_24"/>
+
+
+</menu>
