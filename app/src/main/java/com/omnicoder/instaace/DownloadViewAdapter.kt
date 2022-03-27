@@ -32,6 +32,8 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         holder.layout.setOnClickListener {
             val viewIntent = Intent(context, ViewPostActivity::class.java)
             viewIntent.putExtra("path", post.image_url)
+            viewIntent.putExtra("name",post.title)
+            viewIntent.putExtra("media_type",post.media_type)
             context?.startActivity(viewIntent)
         }
         holder.usernameView.text = post.username
