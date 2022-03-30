@@ -1,4 +1,4 @@
-package com.omnicoder.instaace
+package com.omnicoder.instaace.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -10,8 +10,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.omnicoder.instaace.R
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.ui.activities.ViewPostActivity
+import com.omnicoder.instaace.ui.activities.ViewPostActivity2
 import com.squareup.picasso.Picasso
 
 
@@ -30,7 +32,7 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         picasso.load(post.image_url).into(holder.imageView)
         picasso.load(post.profile_pic_url).into(holder.profilePicView)
         holder.layout.setOnClickListener {
-            val viewIntent = Intent(context, ViewPostActivity::class.java)
+            val viewIntent = Intent(context, ViewPostActivity2::class.java)
             val postDetail= Bundle()
             postDetail.putString("name",post.title)
             postDetail.putInt("media_type",post.media_type)
@@ -38,6 +40,7 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
             postDetail.putString("username",post.username)
             postDetail.putString("profilePicture",post.profile_pic_url)
             postDetail.putString("instagram_url",post.link)
+            postDetail.putBoolean("isCarousel",post.isCarousel)
             viewIntent.putExtras(postDetail)
             context?.startActivity(viewIntent)
         }

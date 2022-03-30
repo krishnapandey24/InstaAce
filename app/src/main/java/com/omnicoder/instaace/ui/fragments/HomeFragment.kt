@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.omnicoder.instaace.DownloadViewAdapter
+import com.omnicoder.instaace.adapters.DownloadViewAdapter
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.databinding.HomeFragmentBinding
 import com.omnicoder.instaace.ui.activities.FirstStartActivity

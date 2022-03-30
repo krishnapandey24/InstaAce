@@ -12,9 +12,6 @@ import com.omnicoder.instaace.network.InstagramAPI
 import javax.inject.Inject
 
 
-
-
-
 class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private val postDao:PostDao) {
     suspend fun fetchDownloadLink(url:String,map: String): Long{
         val postID= getPostCode(url)
@@ -30,13 +27,16 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                     currentPost.isCarousel=true
                     downloadId =download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
                     currentPost.link=url
+                    currentPost.media_type=8
                     postDao.insertPost(currentPost)
+                    val carousel=Carousel(0,item.media_type,currentPost.image_url,currentPost.video_url,currentPost.extension,currentPost.link,currentPost.title)
+                    postDao.insertCarousel(carousel)
                 }else{
                     item.user = items.user
                     item.caption = items.caption
                     val currentPost = downloadPost(postID, item)
                     downloadId =download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
-                    val carousel=Carousel(0,postID,item.media_type,currentPost.image_url,currentPost.video_url,currentPost.file_url,currentPost.in_app_url,currentPost.downloadLink,currentPost.extension,currentPost.title)
+                    val carousel=Carousel(0,item.media_type,currentPost.image_url,currentPost.video_url,currentPost.extension,url,currentPost.title)
                     postDao.insertCarousel(carousel)
                 }
             }
@@ -81,7 +81,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         return Post(postID,item.media_type,item.user.username,item.user.profile_pic_url,item.image_versions2.candidates[0].url,videoUrl,caption,filePath,inAppPath,downloadLink,extension,title,null,false)
     }
 
-    fun download(downloadLink: String?, path: String?, title: String?): Long {
+    private fun download(downloadLink: String?, path: String?, title: String?): Long {
         val uri: Uri = Uri.parse(downloadLink)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)

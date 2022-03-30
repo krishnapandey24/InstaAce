@@ -1,15 +1,15 @@
 package com.omnicoder.instaace.repository
 
-import android.util.Log
-import com.omnicoder.instaace.database.Post
+import androidx.lifecycle.LiveData
+import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.PostDao
-import com.omnicoder.instaace.network.InstagramAPI
 import com.omnicoder.instaace.util.PostDownloader
 import javax.inject.Inject
 
 
-class InstagramRepository @Inject constructor(private val instagramAPI: InstagramAPI,private val postDao: PostDao,private val postDownloader: PostDownloader){
-
+class InstagramRepository @Inject constructor(private val postDao: PostDao,private val postDownloader: PostDownloader){
+    val getAllPost = postDao.getAllPosts()
+    val getFileCount= postDao.getFileCount()
 
 
     suspend fun fetchPost(url: String, map: String): Long{
@@ -18,24 +18,14 @@ class InstagramRepository @Inject constructor(private val instagramAPI: Instagra
 
     fun doesPostExits(url: String): Boolean{
         return postDao.doesPostExits(url)
+    }
+
+    fun getCarousel(giveMeTheLink: String): LiveData<List<Carousel>> {
+        return postDao.getCarousel(giveMeTheLink)
 
     }
 
 
-
-    fun download(downloadLink: String?, path: String?, title: String?){
-        Log.d("tagg","Download added")
-        postDownloader.download(downloadLink,path,title)
-    }
-
-    val getAllPost = postDao.getAllPosts()
-    val getFileCount= postDao.getFileCount()
-
-
-    fun addPost(post: Post){
-        Log.d("tagg","Save added")
-        return postDao.insertPost(post)
-    }
 
 
 

@@ -1,9 +1,11 @@
 package com.omnicoder.instaace.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.repository.InstagramRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,6 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     val postExits= MutableLiveData<Boolean>()
     var downloadID= MutableLiveData<Long>()
 
-
     private suspend fun doesPostExits(url: String):Boolean= withContext(Dispatchers.IO){
         instagramRepository.doesPostExits(url)
     }
@@ -32,11 +33,19 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
                 val downloadID:Long =  instagramRepository.fetchPost(url,map)
                 downloadId=downloadID
             }else{
-                Log.d("tagg", "Post doesnt exits chnaing the valiue")
                 postExits.postValue(true)
             }
             downloadID.postValue(downloadId)
         }
+    }
+
+    fun getCarousel(giveMeTheLink: String): LiveData<List<Carousel>> {
+        return instagramRepository.getCarousel(giveMeTheLink)
+    }
+
+
+    fun deletePost(url:String){
+        TODO("Add this later")
     }
 
 

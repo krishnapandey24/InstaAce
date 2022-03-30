@@ -7,7 +7,7 @@ import androidx.room.Entity
 data class Post(
     @PrimaryKey(autoGenerate = false)
     val postID: String,
-    val media_type: Int,
+    var media_type: Int,
     val username: String,
     val profile_pic_url: String,
     val image_url: String,
@@ -26,14 +26,11 @@ data class Post(
 data class Carousel(
     @PrimaryKey(autoGenerate = true)
     val id:Int,
-    val postID: String,
     val media_type: Int,
     val image_url: String,
     val video_url: String?,
-    val file_url: String?,
-    val in_app_url:String?,
-    val downloadLink:String?,
     val extension:String?,
+    val link: String?,
     val title:String?,
 )
 

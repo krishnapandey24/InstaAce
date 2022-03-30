@@ -2,7 +2,6 @@ package com.omnicoder.instaace.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PostDao {
@@ -21,8 +20,14 @@ interface PostDao {
     @Query("SELECT EXISTS(SELECT media_type FROM post_table WHERE link= :url)")
     fun doesPostExits(url:String): Boolean
 
-    @Query("SELECT * FROM carousel_table WHERE postID= :postID")
-    fun getCarousel(postID:String): LiveData<List<Carousel>>
+    @Query("SELECT EXISTS(SELECT media_type FROM carousel_table WHERE link= :url)")
+    fun doesPostExits2(url:String): Boolean
+
+    @Query("SELECT * FROM carousel_table WHERE link=:url")
+    fun getCarousel(url:String): LiveData<List<Carousel>>
+
+    @Query("SELECT * FROM carousel_table WHERE link=:url")
+    fun getCarousel2(url:String): List<Carousel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCarousel(carousel: Carousel)
