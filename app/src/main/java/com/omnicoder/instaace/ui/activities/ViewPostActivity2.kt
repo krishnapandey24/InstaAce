@@ -54,6 +54,7 @@ class ViewPostActivity2 : AppCompatActivity() {
                 val photos = loadPhoto(name)
                 if (photos != null) {
                     binding.imageView.setImageURI(photos)
+                    uri=photos
                 }
             }
             2 -> {
@@ -64,6 +65,7 @@ class ViewPostActivity2 : AppCompatActivity() {
                     binding.videoView.setMediaController(MediaController(this@ViewPostActivity2))
                     binding.videoView.setVideoURI(videoUri)
                     binding.videoView.start()
+                    uri=videoUri
                 }
                 loadVideo(name)
                 isImage = false
@@ -173,7 +175,6 @@ class ViewPostActivity2 : AppCompatActivity() {
 
 
     private fun loadPhoto(name:String) : Uri?{
-//        return withContext(Dispatchers.IO) {
             val collection = sdk29AndUp {
                 MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
             } ?: MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -199,21 +200,16 @@ class ViewPostActivity2 : AppCompatActivity() {
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH)
                 val heightColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT)
                 cursor.moveToNext()
-
-//                while (cursor.moveToNext()) {
-                    val id = cursor.getLong(idColumn)
-                    val displayName = cursor.getString(displayNameColumn)
-                    Log.d("tagg", "Display name: $displayName")
-                    val width = cursor.getInt(widthColumn)
-                    val height = cursor.getInt(heightColumn)
-                    val contentUri =
-                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    photos.add(SharedStorageMedia(id, displayName, width, height, contentUri))
-//                }
+                 val id = cursor.getLong(idColumn)
+                val displayName = cursor.getString(displayNameColumn)
+                Log.d("tagg", "Display name: $displayName")
+                val width = cursor.getInt(widthColumn)
+                val height = cursor.getInt(heightColumn)
+                val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                photos.add(SharedStorageMedia(id, displayName, width, height, contentUri))
                 photos.toList()
                 contentUri
             }
-//        }
         return uri
 
     }
@@ -242,16 +238,9 @@ class ViewPostActivity2 : AppCompatActivity() {
             val widthColumn= cursor.getColumnIndexOrThrow(MediaStore.Video.Media.WIDTH)
             val heightColumn= cursor.getColumnIndexOrThrow(MediaStore.Video.Media.HEIGHT)
             cursor.moveToNext()
-
-//            while (cursor.moveToNext()){
-                val id= cursor.getLong(idColumn)
-                val displayName= cursor.getString(displayNameColumn)
-                Log.d("tagg","Display name: $displayName")
-                val width= cursor.getInt(widthColumn)
-                val height= cursor.getInt(heightColumn)
-                val contentUri= ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-//                photos.add(SharedStorageMedia(id,displayName,width,height,contentUri))
-//            }
+             val id= cursor.getLong(idColumn)
+            val displayName= cursor.getString(displayNameColumn)
+            val contentUri= ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
             contentUri
         }
 

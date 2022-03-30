@@ -1,11 +1,9 @@
 package com.omnicoder.instaace.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.VideoView
@@ -18,7 +16,7 @@ class CarouselViewPagerAdapter(private val context: Context?, private val dataHo
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageHolder {
         val inflater= LayoutInflater.from(parent.context)
-        val view: View= inflater.inflate(R.layout.carousel_item_layout2,parent,false)
+        val view: View= inflater.inflate(R.layout.carousel_item_layout,parent,false)
         return PageHolder(view)
     }
 
@@ -26,15 +24,6 @@ class CarouselViewPagerAdapter(private val context: Context?, private val dataHo
         val media= dataHolder[position]
         val mediaType= media.mediaType
         val uri= media.uri
-//        if(mediaType==1) {
-//            val imageView: ImageView= holder.imageViewViewStub.inflate().findViewById(R.id.imageView)
-//            imageView.setImageURI(uri)
-//        }else{
-//            val videoView: VideoView= holder.videoViewViewStub.inflate().findViewById(R.id.videoView)
-//            videoView.setMediaController(MediaController(context))
-//            videoView.setVideoURI(uri)
-//            videoView.start()
-//        }
         if(mediaType==1) {
             holder.videoView.visibility=View.GONE
             holder.imageView.visibility=View.VISIBLE
@@ -53,8 +42,6 @@ class CarouselViewPagerAdapter(private val context: Context?, private val dataHo
     }
 
     class PageHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-//        val imageViewViewStub: ViewStub= itemView.findViewById(R.id.imageViewViewStub)
-//        val videoViewViewStub: ViewStub= itemView.findViewById(R.id.videoViewViewStub)
         val imageView:ImageView= itemView.findViewById(R.id.imageView)
         val videoView:VideoView= itemView.findViewById(R.id.videoView)
     }
