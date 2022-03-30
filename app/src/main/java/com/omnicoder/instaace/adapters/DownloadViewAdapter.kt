@@ -29,13 +29,20 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val post= dataHolder[position]
         val picasso= Picasso.get()
+        val mediaType=post.media_type
+        if (mediaType==8){
+            holder.mediaTypeIconView.setImageResource(R.drawable.ic_copy)
+        }else if (mediaType==2){
+            holder.mediaTypeIconView.setImageResource(R.drawable.ic_play)
+        }
+
         picasso.load(post.image_url).into(holder.imageView)
         picasso.load(post.profile_pic_url).into(holder.profilePicView)
         holder.layout.setOnClickListener {
             val viewIntent = Intent(context, ViewPostActivity2::class.java)
             val postDetail= Bundle()
             postDetail.putString("name",post.title)
-            postDetail.putInt("media_type",post.media_type)
+            postDetail.putInt("media_type",mediaType)
             postDetail.putString("caption",post.caption)
             postDetail.putString("username",post.username)
             postDetail.putString("profilePicture",post.profile_pic_url)
@@ -58,6 +65,7 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         val usernameView: TextView = itemView.findViewById(R.id.username_view)
         val captionView: TextView = itemView.findViewById(R.id.caption_view)
         val layout: ConstraintLayout= itemView.findViewById(R.id.constraintLayout)
+        val mediaTypeIconView: ImageView= itemView.findViewById(R.id.mediaTypeIconView)
     }
 
 
