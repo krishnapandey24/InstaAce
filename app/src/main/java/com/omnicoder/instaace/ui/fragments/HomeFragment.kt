@@ -21,7 +21,6 @@ import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
-import android.util.Log
 import com.omnicoder.instaace.TestActivity
 
 
@@ -29,7 +28,7 @@ import com.omnicoder.instaace.TestActivity
 open class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: HomeFragmentBinding
-    private lateinit var cookies: String
+    private var cookies: String?=null
     private var downloadID:Long =0
     private lateinit var onComplete:BroadcastReceiver
 
@@ -43,7 +42,7 @@ open class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         observeData(context)
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
-        cookies= sharedPreferences?.getString("loginCookies","lol") ?: "lol"
+        cookies= sharedPreferences?.getString("loginCookies",null)
         setOnClickListeners()
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
             if(cookies!="lol") {
@@ -53,7 +52,6 @@ open class HomeFragment : Fragment() {
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                Log.d("tagg","ID recived $downloadID id have $id")
                 if (downloadID == id) {
                     Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
                     binding.progressBar.visibility= View.GONE
@@ -71,10 +69,9 @@ open class HomeFragment : Fragment() {
         }
 
         binding.backButton.setOnClickListener{
-            val intent: Intent= Intent(context,TestActivity::class.java)
+            val intent = Intent(context,TestActivity::class.java)
             intent.putExtra("cookie",cookies)
             startActivity(intent)
-
         }
 
         binding.downloadButton.setOnClickListener{
@@ -132,7 +129,6 @@ open class HomeFragment : Fragment() {
 
 
         viewModel.postExits.observe(this){
-            Log.d("tagg","Download id changed $it")
             if (it){
                 binding.editText.text.clear()
                 viewModel.postExits.value=false
@@ -141,7 +137,10 @@ open class HomeFragment : Fragment() {
         }
 
         viewModel.downloadID.observe(this){
-            Log.d("tagg","Download jjjjjid changed $it")
+            if(it==3L){
+                binding.progressBar.visibility=View.GONE
+                Toast.makeText(context,"JsonEncodingException",Toast.LENGTH_SHORT).show()
+            }
             if(it>0){
                 downloadID=it
             }

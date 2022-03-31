@@ -12,8 +12,12 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
     val getFileCount= postDao.getFileCount()
 
 
-    suspend fun fetchPost(url: String, map: String): Long{
-        return postDownloader.fetchDownloadLink(url,map)
+    suspend fun fetchPost(url: String, map: String?): Long{
+        return if(map!=null){
+            postDownloader.fetchDownloadLink(url,map)
+        }else{
+            postDownloader.fetchDownloadLink2(url)
+        }
     }
 
     fun doesPostExits(url: String): Boolean{

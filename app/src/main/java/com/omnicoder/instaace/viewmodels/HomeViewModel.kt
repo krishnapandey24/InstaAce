@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
         instagramRepository.doesPostExits(url)
     }
 
-    fun downloadPost(url: String, map: String){
+    fun downloadPost(url: String, map: String?){
         viewModelScope.launch(Dispatchers.IO) {
             var downloadId: Long=0;
             val postDoesNotExits= withContext(Dispatchers.IO){!doesPostExits(url)}
