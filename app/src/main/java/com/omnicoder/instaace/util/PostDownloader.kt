@@ -14,39 +14,40 @@ import javax.inject.Inject
 
 class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private val postDao:PostDao) {
     suspend fun fetchDownloadLink(url:String,map: String): Long{
-        val postID= getPostCode(url)
-        val items=instagramAPI.getData("p",postID,map).items[0]
-        val post: Post
-        var downloadId: Long = 0
-        if(items.media_type==8){
-            for((index,item) in items.carousel_media.withIndex()){
-                if(index==0) {
-                    item.user = items.user
-                    item.caption = items.caption
-                    val currentPost = downloadPost(postID, item)
-                    currentPost.isCarousel=true
-                    downloadId =download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
-                    currentPost.link=url
-                    currentPost.media_type=8
-                    postDao.insertPost(currentPost)
-                    val carousel=Carousel(0,item.media_type,currentPost.image_url,currentPost.video_url,currentPost.extension,currentPost.link,currentPost.title)
-                    postDao.insertCarousel(carousel)
-                }else{
-                    item.user = items.user
-                    item.caption = items.caption
-                    val currentPost = downloadPost(postID, item)
-                    downloadId =download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
-                    val carousel=Carousel(0,item.media_type,currentPost.image_url,currentPost.video_url,currentPost.extension,url,currentPost.title)
-                    postDao.insertCarousel(carousel)
+            val postID = getPostCode(url)
+            val items = instagramAPI.getData("p", postID, map).items[0]
+            val post: Post
+            var downloadId: Long = 0
+            if (items.media_type == 8) {
+                for ((index, item) in items.carousel_media.withIndex()) {
+                    if (index == 0) {
+                        item.user = items.user
+                        item.caption = items.caption
+                        val currentPost = downloadPost(postID, item)
+                        currentPost.isCarousel = true
+                        downloadId = download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
+                        currentPost.link = url
+                        currentPost.media_type = 8
+                        postDao.insertPost(currentPost)
+                        val carousel = Carousel(0, item.media_type, currentPost.image_url, currentPost.video_url, currentPost.extension, currentPost.link, currentPost.title)
+                        postDao.insertCarousel(carousel)
+                    } else {
+                        item.user = items.user
+                        item.caption = items.caption
+                        val currentPost = downloadPost(postID, item)
+                        download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
+                        downloadId += 1
+                        val carousel = Carousel(0, item.media_type, currentPost.image_url, currentPost.video_url, currentPost.extension, url, currentPost.title)
+                        postDao.insertCarousel(carousel)
+                    }
                 }
+            } else {
+                post = downloadPost(postID, items)
+                post.link = url
+                postDao.insertPost(post)
+                downloadId = download(post.downloadLink, post.file_url, post.title)
             }
-        }else{
-            post=downloadPost(postID,items)
-            post.link=url
-            postDao.insertPost(post)
-            downloadId=download(post.downloadLink,post.file_url,post.title)
-        }
-        return downloadId
+            return downloadId
     }
 
 
@@ -105,8 +106,17 @@ class PostDownloader @Inject constructor(private val context: Context,private va
             url.contains("/?utm_medium=copy_link") -> url.replace("/?utm_medium=copy_link", "")
             else -> url
         }
-        val length = url.length
-        return url.substring(length - 11, length)
+        var length = url.length
+        if(url.last()==("/".last())){
+            url=url.dropLast(1)
+            length -= 1
+        }
+        return if(length>30){
+            url.substring(length- 39,length)
+        }else{
+            url.substring(length - 11, length)
+        }
+
     }
 
 

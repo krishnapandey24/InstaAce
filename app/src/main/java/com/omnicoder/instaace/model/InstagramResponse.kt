@@ -1,17 +1,24 @@
 package com.omnicoder.instaace.model
 
+import com.squareup.moshi.Json
 
-data class InstagramResponse(val items : List<Items>)
+data class Response(val graphql: GraphQL)
 
-data class Items(val media_type: Int, var user: User, val image_versions2: ImageVersion, val video_versions: List<VideoVersion>, val carousel_media: List<Items>, var caption: Caption?)
+data class GraphQL(val shortcode_media: ShortCodeMedia)
 
-data class User(val username: String, val full_name: String, val profile_pic_url: String)
+data class ShortCodeMedia(@Json(name = "__typename") val typename: String,val display_resources: List<DisplayResources>,val owner:Owner, val edge_media_to_caption: EdgeMediaToCaption, val video_url:String, val edge_sidecar_to_children: EdgeSideCarToChildren)
 
-data class ImageVersion(val candidates: List<Candidates>)
+data class DisplayResources(val src: String)
 
-data class VideoVersion(val width: Int, val height: Int, val url: String)
+data class Owner(val username: String, val full_name: String, val profile_pic_url: String)
 
-data class Candidates(val width: Int, val height: Int, val url: String)
+data class EdgeMediaToCaption(val edges: Edges)
 
-data class Caption(val text: String?)
+data class Edges(val node: Node)
+
+data class Node(val text:String)
+
+data class EdgeSideCarToChildren(val edges: List<Edges2>)
+
+data class Edges2(val node: ShortCodeMedia)
 

@@ -22,6 +22,7 @@ import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
 import android.util.Log
+import com.omnicoder.instaace.TestActivity
 
 
 @AndroidEntryPoint
@@ -41,9 +42,9 @@ open class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         observeData(context)
-        setOnClickListeners()
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
         cookies= sharedPreferences?.getString("loginCookies","lol") ?: "lol"
+        setOnClickListeners()
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
             if(cookies!="lol") {
                 checkClipboard()
@@ -52,6 +53,7 @@ open class HomeFragment : Fragment() {
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                Log.d("tagg","ID recived $downloadID id have $id")
                 if (downloadID == id) {
                     Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
                     binding.progressBar.visibility= View.GONE
@@ -67,6 +69,14 @@ open class HomeFragment : Fragment() {
         binding.faqButton.setOnClickListener{
             startActivity(Intent(context,InstagramLoginActivity::class.java))
         }
+
+        binding.backButton.setOnClickListener{
+            val intent: Intent= Intent(context,TestActivity::class.java)
+            intent.putExtra("cookie",cookies)
+            startActivity(intent)
+
+        }
+
         binding.downloadButton.setOnClickListener{
             val postLink=binding.editText.text.toString()
             if(isInstagramLink(postLink)){
