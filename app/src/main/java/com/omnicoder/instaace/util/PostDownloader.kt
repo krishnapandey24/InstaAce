@@ -4,14 +4,12 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.database.PostDao
 import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.model.ShortCodeMedia
 import com.omnicoder.instaace.network.InstagramAPI
-import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -23,13 +21,13 @@ class PostDownloader @Inject constructor(private val context: Context,private va
             val media = instagramAPI.getDataWithoutLogin("p", postID).graphql.shortcode_media
             val post: Post
             var downloadId: Long = 0
-            val media_type=if(media.edge_sidecar_to_children==null) Constants.CAROUSEL else (if(media.video_url==null) Constants.IMAGE else Constants.VIDEO)
-            if (media_type == Constants.CAROUSEL) {
+            val mediaType=media.__typename
+            if (mediaType == Constants.CAROUSEL) {
                 for ((index, item) in media.edge_sidecar_to_children.edges.withIndex()) {
                     if (index == 0) {
                         item.node.owner = media.owner
                         item.node.edge_media_to_caption = media.edge_media_to_caption
-                        val currentPost = downloadPost2(postID, item.node,media_type)
+                        val currentPost = downloadPost2(postID, item.node,item.node.__typename)
                         currentPost.isCarousel = true
                         downloadId =
                             download(
@@ -53,7 +51,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                     } else {
                         item.node.owner = media.owner
                         item.node.edge_media_to_caption = media.edge_media_to_caption
-                        val currentPost = downloadPost2(postID, item.node,media_type)
+                        val currentPost = downloadPost2(postID, item.node,item.node.__typename)
                         download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
                         downloadId += 1
                         val carousel = Carousel(
@@ -69,7 +67,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                     }
                 }
             } else {
-                post = downloadPost2(postID, media,media_type)
+                post = downloadPost2(postID, media,mediaType)
                 post.link = url
                 postDao.insertPost(post)
                 downloadId = download(post.downloadLink, post.file_url, post.title)
@@ -178,12 +176,13 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                 extension=".jpg"
                 mediaType=1
                 path= Constants.IMAGE_FOLDER_NAME
-                item.display_resources.last().src
+                imageUrl=item.display_resources.last().src
+                imageUrl
             }
         }
         val inAppPath=context.filesDir.absolutePath
         val title=item.owner.username +"_"+System.currentTimeMillis().toString() + extension
-        val caption: String?= item.edge_media_to_caption?.edges?.node?.text
+        val caption: String?= item.edge_media_to_caption.edges?.get(0)?.node?.text
 
         return Post(postID,mediaType,item.owner.username,item.owner.profile_pic_url,imageUrl,videoUrl,caption,path,inAppPath,downloadLink,extension,title,null,false)
     }
