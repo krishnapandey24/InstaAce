@@ -25,7 +25,7 @@
         android:fontFamily="@font/roboto_bold"
         android:textColor="@color/black"
         android:text="Hold On!"
-        android:textSize="28sp"
+        android:textSize="25sp"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +39,7 @@
         android:fontFamily="@font/roboto_medium"
         android:text="Unfortunately Instagram don't allow downloading more than 3-4 posts at once without login."
         android:textColor="@color/main"
-        android:textSize="25sp"
+        android:textSize="23sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -75,26 +75,47 @@
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
 
-
-    <Button
-        android:id="@+id/button2"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:text="Login with Instagram"
-        android:padding="16dp"
         android:background="@drawable/instagram_gradient"
-        android:drawableLeft="@drawable/ic_instagram_logo"
+        android:backgroundTint="@null"
+        android:drawableLeft="@drawable/ic_instagram_seeklogo_com"
+        android:drawablePadding="19dp"
         android:gravity="center"
-        android:paddingStart="18sp"
-        android:drawablePadding="21dp"
-        android:textSize="18sp"
+        android:padding="14dp"
+        android:paddingStart="15sp"
+        android:text="Login with Instagram"
+        android:textColor="@color/white"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
         tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/skip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/outline_for_button"
+        android:gravity="center"
+        android:paddingStart="18sp"
+        android:text="I will wait"
+        android:textColor="@color/main"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton"
+        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

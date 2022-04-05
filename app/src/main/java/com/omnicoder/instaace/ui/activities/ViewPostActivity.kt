@@ -133,7 +133,7 @@ class ViewPostActivity : AppCompatActivity() {
         }
 
         binding.repost.setOnClickListener{
-            repost(caption, username)
+            repost(caption, username,isImage)
 
         }
 
@@ -220,13 +220,13 @@ class ViewPostActivity : AppCompatActivity() {
 
     }
 
-    private fun repost(caption:String,username:String) {
+    private fun repost(caption:String,username:String,isImage:Boolean) {
         val repostCaption= Constants.REPOST+"@"+username+" \n"+caption
         val clipboardManager=getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData= ClipData.newPlainText("text",repostCaption)
         clipboardManager.setPrimaryClip(clipData)
         val share = Intent(Intent.ACTION_SEND)
-        share.type = "video/*"
+        share.type = if(isImage) "image/*" else "video/*"
         share.setPackage(Constants.INSTAGRAM)
         share.putExtra(Intent.EXTRA_STREAM, uri)
         startActivity(Intent.createChooser(share, "Share to"))

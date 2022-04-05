@@ -22,6 +22,7 @@ import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
 import com.omnicoder.instaace.TestActivity
+import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
 @AndroidEntryPoint
@@ -64,6 +65,10 @@ open class HomeFragment : Fragment() {
     }
 
     private fun setOnClickListeners(){
+        binding.backButton.setOnClickListener{
+            startActivity(Intent(context,RequestLoginActivity::class.java))
+        }
+
         binding.faqButton.setOnClickListener{
             startActivity(Intent(context,InstagramLoginActivity::class.java))
         }
@@ -139,6 +144,7 @@ open class HomeFragment : Fragment() {
         viewModel.downloadID.observe(this){
             if(it==3L){
                 binding.progressBar.visibility=View.GONE
+                startActivity(Intent(context,RequestLoginActivity::class.java))
                 Toast.makeText(context,"JsonEncodingException",Toast.LENGTH_SHORT).show()
             }
             if(it>0){

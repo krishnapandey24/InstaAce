@@ -20,14 +20,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaAce">
         <activity
+            android:name=".ui.activities.RequestLoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.InstagramLoginActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".TestActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" >
+
+        </activity>
         <activity
             android:name=".ui.activities.FirstStartActivity"
             android:exported="false" />

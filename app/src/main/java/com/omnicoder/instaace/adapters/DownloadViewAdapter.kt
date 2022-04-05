@@ -18,7 +18,6 @@ import com.squareup.picasso.Picasso
 
 class DownloadViewAdapter( private val context:Context?,private val  dataHolder: List<Post>) : RecyclerView.Adapter<DownloadViewAdapter.MyViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view: View = inflater.inflate(R.layout.download_view_item_layout, parent, false)
