@@ -155,13 +155,12 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         val path: String
         val extension: String
         val mediaType: Int
-        var imageUrl=""
+        var imageUrl=item.display_resources.last().src
         val downloadLink= when (media_type) {
             Constants.IMAGE -> {
                 extension=".jpg"
                 mediaType=1
                 path= Constants.IMAGE_FOLDER_NAME
-                imageUrl=item.display_resources.last().src
                 imageUrl
 
             }
