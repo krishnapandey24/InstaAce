@@ -9,7 +9,7 @@
     <color name="backgroundForCaption">#73000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent_white">#E6FFFFFF</color>
-
+    <color name="transparent_white2">#CCFFFFFF</color>
     <color name="main">#30A6A6</color>
     <color name="main2">#c030A6A6</color>
     <color name="red">#cf0840</color>

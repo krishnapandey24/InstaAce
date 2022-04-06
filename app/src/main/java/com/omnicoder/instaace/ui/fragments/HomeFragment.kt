@@ -16,12 +16,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.adapters.DownloadViewAdapter
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.databinding.HomeFragmentBinding
-import com.omnicoder.instaace.ui.activities.FirstStartActivity
 import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
-import com.omnicoder.instaace.TestActivity
+import android.util.Log
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
@@ -32,6 +31,8 @@ open class HomeFragment : Fragment() {
     private var cookies: String?=null
     private var downloadID:Long =0
     private lateinit var onComplete:BroadcastReceiver
+    private var size: Int= 0
+    private var load: Boolean=false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
@@ -46,7 +47,7 @@ open class HomeFragment : Fragment() {
         cookies= sharedPreferences?.getString("loginCookies",null)
         setOnClickListeners()
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
-            if(cookies!="lol") {
+            if(cookies!=null) {
                 checkClipboard()
             }
         }
@@ -56,6 +57,9 @@ open class HomeFragment : Fragment() {
                 if (downloadID == id) {
                     Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
                     binding.progressBar.visibility= View.GONE
+                    val downloadViewHolder= binding.downloadView.findViewHolderForAdapterPosition(size-1) as DownloadViewAdapter.MyViewHolder?
+                    downloadViewHolder?.loadingViewStub?.visibility= View.GONE
+                    downloadViewHolder?.layout?.isClickable=true
                 }
             }
         }
@@ -66,18 +70,15 @@ open class HomeFragment : Fragment() {
 
     private fun setOnClickListeners(){
         binding.backButton.setOnClickListener{
-            startActivity(Intent(context,RequestLoginActivity::class.java))
+            val viewHolder: DownloadViewAdapter.MyViewHolder? = binding.downloadView.findViewHolderForAdapterPosition(6) as DownloadViewAdapter.MyViewHolder?
+            Log.d("tagg","viewHolder is null:  ${viewHolder==null} ")
         }
 
         binding.faqButton.setOnClickListener{
             startActivity(Intent(context,InstagramLoginActivity::class.java))
         }
 
-        binding.backButton.setOnClickListener{
-            val intent = Intent(context,TestActivity::class.java)
-            intent.putExtra("cookie",cookies)
-            startActivity(intent)
-        }
+
 
         binding.downloadButton.setOnClickListener{
             val postLink=binding.editText.text.toString()
@@ -98,13 +99,10 @@ open class HomeFragment : Fragment() {
     }
 
     private fun download(link:String){
-        if(cookies=="lol"){
-            startActivity(Intent(context,FirstStartActivity::class.java))
-            activity?.finish()
-        }
         binding.progressBar.visibility= View.VISIBLE
         viewModel.downloadPost(link, cookies)
         binding.editText.text.clear()
+        load=true
     }
 
     private fun checkClipboard() {
@@ -122,6 +120,7 @@ open class HomeFragment : Fragment() {
     private fun observeData(context: Context?) {
         viewModel.allPosts.observe(this){
             setRecyclerView(it,context)
+            size= it.size
         }
         viewModel.fileCount.observe(this){
             binding.fileCount.text=it.toString()
@@ -138,6 +137,7 @@ open class HomeFragment : Fragment() {
                 binding.editText.text.clear()
                 viewModel.postExits.value=false
                 binding.progressBar.visibility= View.GONE
+                load=false
             }
         }
 
@@ -169,11 +169,12 @@ open class HomeFragment : Fragment() {
 
     private fun setRecyclerView(posts: List<Post>,context: Context?) {
         val recyclerView: RecyclerView = binding.downloadView
-        val adapter = DownloadViewAdapter(context,posts)
+        val adapter = DownloadViewAdapter(context,posts,load)
         val layoutManager= LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
         layoutManager.stackFromEnd=true
         recyclerView.layoutManager=layoutManager
         recyclerView.adapter = adapter
+
     }
 
     private fun Fragment.hideKeyboard() {
@@ -190,4 +191,6 @@ open class HomeFragment : Fragment() {
         super.onDestroy()
         activity?.unregisterReceiver(onComplete)
     }
+
+
 }

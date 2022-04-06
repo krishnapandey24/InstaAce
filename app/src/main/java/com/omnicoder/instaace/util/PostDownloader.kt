@@ -29,15 +29,8 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                         item.node.edge_media_to_caption = media.edge_media_to_caption
                         val currentPost = downloadPost2(postID, item.node,item.node.__typename)
                         currentPost.isCarousel = true
-                        downloadId =
-                            download(
-                                currentPost.downloadLink,
-                                currentPost.file_url,
-                                currentPost.title
-                            )
+                        downloadId = download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
                         currentPost.link = url
-                        currentPost.media_type = 8
-                        postDao.insertPost(currentPost)
                         val carousel = Carousel(
                             0,
                             currentPost.media_type,
@@ -48,6 +41,8 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                             currentPost.title
                         )
                         postDao.insertCarousel(carousel)
+                        currentPost.media_type = 8
+                        postDao.insertPost(currentPost)
                     } else {
                         item.node.owner = media.owner
                         item.node.edge_media_to_caption = media.edge_media_to_caption

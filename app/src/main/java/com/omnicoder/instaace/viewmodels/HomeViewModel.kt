@@ -1,6 +1,5 @@
 package com.omnicoder.instaace.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,7 +26,7 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
 
     fun downloadPost(url: String, map: String?){
         viewModelScope.launch(Dispatchers.IO) {
-            var downloadId: Long=0;
+            var downloadId: Long=0
             val postDoesNotExits= withContext(Dispatchers.IO){!doesPostExits(url)}
             if(postDoesNotExits){
                 val downloadID:Long =  instagramRepository.fetchPost(url,map)
@@ -44,9 +43,9 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     }
 
 
-    fun deletePost(url:String){
-        TODO("Add this later")
-    }
+//    fun deletePost(url:String){
+//        TODO("Add this later")
+//    }
 
 
 

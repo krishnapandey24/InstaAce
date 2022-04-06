@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +17,8 @@ import com.omnicoder.instaace.ui.activities.ViewPostActivity
 import com.squareup.picasso.Picasso
 
 
-class DownloadViewAdapter( private val context:Context?,private val  dataHolder: List<Post>) : RecyclerView.Adapter<DownloadViewAdapter.MyViewHolder>() {
+class DownloadViewAdapter( private val context:Context?,private val dataHolder: List<Post>,private val load: Boolean) : RecyclerView.Adapter<DownloadViewAdapter.MyViewHolder>() {
+    private var size: Int=0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -50,10 +52,15 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         }
         holder.usernameView.text = post.username
         holder.captionView.text = post.caption
+        if(load && position==size-1){
+            holder.loadingViewStub.inflate()
+            holder.layout.isClickable=false
+        }
     }
 
     override fun getItemCount(): Int {
-        return dataHolder.size
+        size= dataHolder.size
+        return size
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -63,6 +70,7 @@ class DownloadViewAdapter( private val context:Context?,private val  dataHolder:
         val captionView: TextView = itemView.findViewById(R.id.caption_view)
         val layout: ConstraintLayout= itemView.findViewById(R.id.constraintLayout)
         val mediaTypeIconView: ImageView= itemView.findViewById(R.id.mediaTypeIconView)
+        val loadingViewStub: ViewStub= itemView.findViewById(R.id.loadingViewStub)
     }
 
 
