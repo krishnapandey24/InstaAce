@@ -2,6 +2,7 @@ package com.omnicoder.instaace.util
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
@@ -11,17 +12,18 @@ import com.omnicoder.instaace.database.PostDao
 import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.model.ShortCodeMedia
 import com.omnicoder.instaace.network.InstagramAPI
+import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 import javax.inject.Inject
 
 
 class PostDownloader @Inject constructor(private val context: Context,private val instagramAPI: InstagramAPI, private val postDao:PostDao) {
 
-    suspend fun fetchDownloadLink2(url: String):Long{
+    suspend fun fetchDownloadLink2(url: String):MutableList<Long>{
         try {
             val postID = getPostCode(url)
             val media = instagramAPI.getDataWithoutLogin("p", postID).graphql.shortcode_media
             val post: Post
-            var downloadId: Long = 0
+            val downloadId= mutableListOf<Long>()
             val mediaType=media.__typename
             if (mediaType == Constants.CAROUSEL) {
                 for ((index, item) in media.edge_sidecar_to_children.edges.withIndex()) {
@@ -30,7 +32,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                         item.node.edge_media_to_caption = media.edge_media_to_caption
                         val currentPost = downloadPost2(postID, item.node,item.node.__typename)
                         currentPost.isCarousel = true
-                        downloadId = download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
+                        downloadId.add(download(currentPost.downloadLink, currentPost.file_url, currentPost.title))
                         currentPost.link = url
                         val carousel = Carousel(
                             0,
@@ -48,8 +50,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                         item.node.owner = media.owner
                         item.node.edge_media_to_caption = media.edge_media_to_caption
                         val currentPost = downloadPost2(postID, item.node,item.node.__typename)
-                        download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
-                        downloadId += 1
+                        downloadId.add(download(currentPost.downloadLink, currentPost.file_url, currentPost.title))
                         val carousel = Carousel(
                             0,
                             currentPost.media_type,
@@ -66,23 +67,23 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                 post = downloadPost2(postID, media,mediaType)
                 post.link = url
                 postDao.insertPost(post)
-                downloadId = download(post.downloadLink, post.file_url, post.title)
+                downloadId.add(download(post.downloadLink, post.file_url, post.title))
 
             }
 
             return downloadId
         }catch (e:com.squareup.moshi.JsonEncodingException){
             e.printStackTrace()
-            return 3
+            return mutableListOf(3L)
         }
     }
 
 
-    suspend fun fetchDownloadLink(url:String,map: String): Long{
+    suspend fun fetchDownloadLink(url:String,map: String): MutableList<Long>{
         val postID = getPostCode(url)
         val items = instagramAPI.getData("p", postID, map).items[0]
         val post: Post
-        var downloadId: Long = 0
+        val downloadId= mutableListOf<Long>()
         if (items.media_type == 8) {
             for ((index, item) in items.carousel_media.withIndex()) {
                 if (index == 0) {
@@ -90,8 +91,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                     item.caption = items.caption
                     val currentPost = downloadPost(postID, item)
                     currentPost.isCarousel = true
-                    downloadId = download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
-                    Log.d("tagg","Donwload ID : $downloadId")
+                    downloadId.add(download(currentPost.downloadLink, currentPost.file_url, currentPost.title))
                     currentPost.link = url
                     currentPost.media_type = 8
                     postDao.insertPost(currentPost)
@@ -101,9 +101,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                     item.user = items.user
                     item.caption = items.caption
                     val currentPost = downloadPost(postID, item)
-                    val actualDownloadID=download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
-                    downloadId += 1
-                    Log.d("tagg","Donwload ID : $downloadId and actual: $actualDownloadID")
+                    downloadId.add(download(currentPost.downloadLink, currentPost.file_url, currentPost.title))
                     val carousel = Carousel(0, item.media_type, currentPost.image_url, currentPost.video_url, currentPost.extension, url, currentPost.title)
                     postDao.insertCarousel(carousel)
                 }
@@ -112,7 +110,10 @@ class PostDownloader @Inject constructor(private val context: Context,private va
             post = downloadPost(postID, items)
             post.link = url
             postDao.insertPost(post)
-            downloadId = download(post.downloadLink, post.file_url, post.title)
+            downloadId.add(download(post.downloadLink, post.file_url, post.title))
+        }
+        for(id in downloadId){
+            Log.d("tagg","id in list $id")
         }
         return downloadId
     }

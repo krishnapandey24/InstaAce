@@ -20,7 +20,6 @@ import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
-import android.util.Log
 import com.omnicoder.instaace.TestActivity
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
@@ -30,10 +29,11 @@ open class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: HomeFragmentBinding
     private var cookies: String?=null
-    private var downloadID:Long =0
+    private var downloadID= mutableListOf<Long>()
     private lateinit var onComplete:BroadcastReceiver
     private var size: Int= 0
     private var load: Boolean=false
+    private var doItNow: Boolean=false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
@@ -55,14 +55,14 @@ open class HomeFragment : Fragment() {
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                Log.d("tagg","download id received: $id")
-                if (downloadID == id) {
-                    Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
+                downloadID.remove(id)
+                if(downloadID.isEmpty()){
                     binding.progressBar.visibility= View.GONE
                     val downloadViewHolder= binding.downloadView.findViewHolderForAdapterPosition(size-1) as DownloadViewAdapter.MyViewHolder?
                     downloadViewHolder?.loadingViewStub?.visibility= View.GONE
                     downloadViewHolder?.layout?.isClickable=true
                 }
+
             }
         }
 
@@ -143,14 +143,14 @@ open class HomeFragment : Fragment() {
         }
 
         viewModel.downloadID.observe(this){
-            if(it==3L){
+            if(it.isNotEmpty() && it[0]==3L){
                 binding.progressBar.visibility=View.GONE
-                startActivity(Intent(context,RequestLoginActivity::class.java))
+                startActivity(Intent(context, RequestLoginActivity::class.java))
                 Toast.makeText(context,"JsonEncodingException",Toast.LENGTH_SHORT).show()
-            }
-            if(it>0){
+            }else{
                 downloadID=it
             }
+
         }
 
 

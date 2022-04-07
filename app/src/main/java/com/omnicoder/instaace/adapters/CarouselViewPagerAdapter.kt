@@ -34,6 +34,10 @@ class CarouselViewPagerAdapter(private val context: Context?, private val dataHo
             holder.videoView.setMediaController(MediaController(context))
             holder.videoView.setVideoURI(uri)
             holder.videoView.start()
+            holder.videoView.setOnCompletionListener {
+                it.seekTo(0)
+                it.start()
+            }
         }
     }
 

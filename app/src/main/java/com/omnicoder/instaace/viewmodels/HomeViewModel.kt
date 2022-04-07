@@ -18,7 +18,7 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     val allPosts = instagramRepository.getAllPost
     val fileCount = instagramRepository.getFileCount
     val postExits= MutableLiveData<Boolean>()
-    var downloadID= MutableLiveData<Long>()
+    var downloadID= MutableLiveData<MutableList<Long>>()
 
     private suspend fun doesPostExits(url: String):Boolean= withContext(Dispatchers.IO){
         instagramRepository.doesPostExits(url)
@@ -26,15 +26,14 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
 
     fun downloadPost(url: String, map: String?){
         viewModelScope.launch(Dispatchers.IO) {
-            var downloadId: Long=0
+            var downloadIdList= mutableListOf<Long>()
             val postDoesNotExits= withContext(Dispatchers.IO){!doesPostExits(url)}
             if(postDoesNotExits){
-                val downloadID:Long =  instagramRepository.fetchPost(url,map)
-                downloadId=downloadID
+                downloadIdList= instagramRepository.fetchPost(url,map)
             }else{
                 postExits.postValue(true)
             }
-            downloadID.postValue(downloadId)
+            downloadID.postValue(downloadIdList)
         }
     }
 

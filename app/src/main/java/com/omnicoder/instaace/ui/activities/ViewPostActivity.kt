@@ -64,8 +64,12 @@ class ViewPostActivity : AppCompatActivity() {
                     binding.videoView.setVideoURI(videoUri)
                     binding.videoView.start()
                     uri=videoUri
+                    binding.videoView.setOnCompletionListener {
+                        it.seekTo(0)
+                        it.start()
+                    }
                 }
-                loadVideo(name)
+//                loadVideo(name)
                 isImage = false
             }
             else -> {
