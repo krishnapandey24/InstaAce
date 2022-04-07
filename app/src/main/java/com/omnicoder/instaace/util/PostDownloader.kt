@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.database.PostDao
@@ -90,6 +91,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                     val currentPost = downloadPost(postID, item)
                     currentPost.isCarousel = true
                     downloadId = download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
+                    Log.d("tagg","Donwload ID : $downloadId")
                     currentPost.link = url
                     currentPost.media_type = 8
                     postDao.insertPost(currentPost)
@@ -99,8 +101,9 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                     item.user = items.user
                     item.caption = items.caption
                     val currentPost = downloadPost(postID, item)
-                    download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
+                    val actualDownloadID=download(currentPost.downloadLink, currentPost.file_url, currentPost.title)
                     downloadId += 1
+                    Log.d("tagg","Donwload ID : $downloadId and actual: $actualDownloadID")
                     val carousel = Carousel(0, item.media_type, currentPost.image_url, currentPost.video_url, currentPost.extension, url, currentPost.title)
                     postDao.insertCarousel(carousel)
                 }

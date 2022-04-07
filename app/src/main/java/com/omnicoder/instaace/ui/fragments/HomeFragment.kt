@@ -21,6 +21,7 @@ import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
 import android.util.Log
+import com.omnicoder.instaace.TestActivity
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
@@ -54,6 +55,7 @@ open class HomeFragment : Fragment() {
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                Log.d("tagg","download id received: $id")
                 if (downloadID == id) {
                     Toast.makeText(context, "Download Completed", Toast.LENGTH_SHORT).show()
                     binding.progressBar.visibility= View.GONE
@@ -70,8 +72,7 @@ open class HomeFragment : Fragment() {
 
     private fun setOnClickListeners(){
         binding.backButton.setOnClickListener{
-            val viewHolder: DownloadViewAdapter.MyViewHolder? = binding.downloadView.findViewHolderForAdapterPosition(6) as DownloadViewAdapter.MyViewHolder?
-            Log.d("tagg","viewHolder is null:  ${viewHolder==null} ")
+           startActivity(Intent(context,TestActivity::class.java))
         }
 
         binding.faqButton.setOnClickListener{
