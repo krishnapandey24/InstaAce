@@ -1,15 +1,19 @@
 package com.omnicoder.instaace.ui.activities
 
+import android.app.Dialog
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuInflater
 import android.view.View
+import android.view.ViewStub
 import android.widget.MediaController
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -24,6 +28,8 @@ import com.omnicoder.instaace.util.sdk29AndUp
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.StringBuilder
+import java.util.regex.Pattern
 
 
 @AndroidEntryPoint
@@ -32,6 +38,8 @@ class ViewPostActivity : AppCompatActivity() {
     private var viewMore= true
     private lateinit var uri:Uri
     private lateinit var viewModel:HomeViewModel
+    private var captionDialog: Dialog?= null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityViewPostBinding.inflate(layoutInflater)
@@ -69,7 +77,6 @@ class ViewPostActivity : AppCompatActivity() {
                         it.start()
                     }
                 }
-//                loadVideo(name)
                 isImage = false
             }
             else -> {
@@ -124,7 +131,7 @@ class ViewPostActivity : AppCompatActivity() {
         val viewLess = "View Less"
         binding.viewMore.setOnClickListener {
             if (viewMore) {
-                binding.captionView.maxLines = 70
+                binding.captionView.maxLines = 30
                 binding.viewMore.text = viewLess
             } else {
                 binding.captionView.maxLines = 3
@@ -138,7 +145,10 @@ class ViewPostActivity : AppCompatActivity() {
 
         binding.repost.setOnClickListener{
             repost(caption, username,isImage)
+        }
 
+        binding.caption.setOnClickListener{
+            launchCaptionDialog(caption,username)
         }
 
         binding.menu.setOnClickListener{
@@ -235,6 +245,44 @@ class ViewPostActivity : AppCompatActivity() {
         share.putExtra(Intent.EXTRA_STREAM, uri)
         startActivity(Intent.createChooser(share, "Share to"))
         Toast.makeText(this@ViewPostActivity,"Caption copied to clipboard",Toast.LENGTH_SHORT).show()
+    }
+
+    private fun launchCaptionDialog(caption: String, username: String) {
+        if (captionDialog == null) {
+            val clipboardManager=getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            captionDialog = Dialog(this@ViewPostActivity)
+            captionDialog!!.setContentView(R.layout.caption_dialog_layout)
+            captionDialog!!.window?.setBackgroundDrawable(ContextCompat.getDrawable(this@ViewPostActivity,R.drawable.rounded_corner_white_rectangle))
+            captionDialog!!.findViewById<TextView>(R.id.captionView).text = caption
+
+            captionDialog!!.findViewById<TextView>(R.id.copyAll).setOnClickListener{
+                val clipData= ClipData.newPlainText("text",caption)
+                clipboardManager.setPrimaryClip(clipData)
+                Toast.makeText(this@ViewPostActivity,"Caption copied!",Toast.LENGTH_SHORT).show()
+            }
+
+            captionDialog!!.findViewById<TextView>(R.id.copyHashtags).setOnClickListener{
+                val loadingViewStub=captionDialog!!.findViewById<ViewStub>(R.id.loadingViewStub)
+                loadingViewStub.inflate()
+                val stringBuilder= StringBuilder()
+                val pattern= Pattern.compile("#(\\w+)")
+                val match=pattern.matcher(caption)
+                while(match.find()){
+                    stringBuilder.append("#"+match.group(1)+" ")
+                }
+                val clipData= ClipData.newPlainText("text",stringBuilder)
+                clipboardManager.setPrimaryClip(clipData)
+                loadingViewStub.visibility=View.GONE
+                Toast.makeText(this@ViewPostActivity,"Hashtags copied!",Toast.LENGTH_SHORT).show()
+            }
+
+            captionDialog!!.findViewById<TextView>(R.id.copyUsername).setOnClickListener{
+                val clipData= ClipData.newPlainText("text",username)
+                clipboardManager.setPrimaryClip(clipData)
+                Toast.makeText(this@ViewPostActivity,"Username copied!",Toast.LENGTH_SHORT).show()
+            }
+        }
+        captionDialog!!.show()
     }
 
 
