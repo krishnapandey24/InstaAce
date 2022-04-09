@@ -51,6 +51,7 @@ class ViewPostActivity : AppCompatActivity() {
     private lateinit var mediaList: List<CarouselMedia>
     private lateinit var intentSenderLauncher : ActivityResultLauncher<IntentSenderRequest>
     private var deletedImageUri: Uri?=null
+    private var notDeleted=true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,10 +101,11 @@ class ViewPostActivity : AppCompatActivity() {
     }
 
     private fun loadCarousel(link:String){
+        Log.d("tagg","load carousel got called")
         val viewStub= binding.viewStub.inflate()
         val viewPager:ViewPager2= viewStub.findViewById(R.id.viewpager)
         viewModel.getCarousel(link).observe(this){
-            if(it!=null){
+            if(it!=null && notDeleted){
                 mediaList=fetchCarousel(it)
                 viewPager.adapter= CarouselViewPagerAdapter(this@ViewPostActivity,mediaList)
                 val tabLayout: TabLayout = viewStub.findViewById(R.id.tabLayout)
@@ -380,6 +382,7 @@ class ViewPostActivity : AppCompatActivity() {
     }
 
     private fun deletePost(instagramUrl:String,isCarousel:Boolean){
+        notDeleted=false
         val clipboardManager=getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val primaryClip= clipboardManager.primaryClip?.getItemAt(0)?.text.toString()
         if(primaryClip==instagramUrl){
@@ -412,20 +415,16 @@ class ViewPostActivity : AppCompatActivity() {
         var downloadId=0L
         viewModel.downloadPost2(link,path,title)
         viewModel.downloadId.observe(this) {
-            Log.d("tagg","it changed")
             downloadId = it
         }
         lateinit var onComplete:BroadcastReceiver
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                Log.d("tagg","OnReciever")
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 if(id==downloadId){
                     if(isImage){
-                        Log.d("tagg","title of file is: $title")
                         binding.imageView.setImageURI(loadPhoto(title,null))
                     }else{
-                        Log.d("tagg","title of file is: $title")
                         setVideo(loadVideo(title,null))
                     }
                     loadingDialog.dismiss()
@@ -437,6 +436,7 @@ class ViewPostActivity : AppCompatActivity() {
 
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
+
 
 
 

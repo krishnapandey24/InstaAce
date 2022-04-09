@@ -110,9 +110,6 @@ class PostDownloader @Inject constructor(private val context: Context,private va
             postDao.insertPost(post)
             downloadId.add(download(post.downloadLink, post.file_url, post.title))
         }
-        for(id in downloadId){
-            Log.d("tagg","id in list $id")
-        }
         return downloadId
     }
 
@@ -184,7 +181,6 @@ class PostDownloader @Inject constructor(private val context: Context,private va
 
 
     fun download(downloadLink: String?, path: String?, title: String?): Long {
-        Log.d("tagg","gonna download $downloadLink , $path , $title")
         val uri: Uri = Uri.parse(downloadLink)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
