@@ -407,7 +407,6 @@ class ViewPostActivity : AppCompatActivity() {
     }
 
     private fun download(link: String,isImage:Boolean,title:String){
-        Log.d("tagg","Inside download")
         val loadingDialog=Dialog(this)
         loadingDialog.setContentView(R.layout.download_loading_dialog)
         loadingDialog.show()

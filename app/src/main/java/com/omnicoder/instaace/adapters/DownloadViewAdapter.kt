@@ -30,12 +30,11 @@ class DownloadViewAdapter( private val context:Context?,private val dataHolder: 
         val post= dataHolder[position]
         val picasso= Picasso.get()
         val mediaType=post.media_type
-        if (mediaType==8){
-            holder.mediaTypeIconView.setImageResource(R.drawable.ic_copy)
-        }else if (mediaType==2){
-            holder.mediaTypeIconView.setImageResource(R.drawable.ic_play)
+        when (mediaType){
+            8 -> holder.mediaTypeIconView.setImageResource(R.drawable.ic_copy)
+            2 -> holder.mediaTypeIconView.setImageResource(R.drawable.ic_play)
+            else -> holder.mediaTypeIconView.visibility= View.GONE
         }
-
         picasso.load(post.image_url).into(holder.imageView)
         picasso.load(post.profile_pic_url).into(holder.profilePicView)
         holder.layout.setOnClickListener {
