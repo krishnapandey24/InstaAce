@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewStub
@@ -70,7 +71,7 @@ class ViewPostActivity : AppCompatActivity() {
             1 -> {
                 binding.videoView.visibility = View.GONE
                 binding.imageView.visibility = View.VISIBLE
-                val photos = loadPhoto(name, post.getString("imageLink"))
+                val photos = loadPhoto(name, post.getString("imageUrl"))
                 if (photos != null) {
                     binding.imageView.setImageURI(photos)
                     uri=photos
@@ -79,18 +80,8 @@ class ViewPostActivity : AppCompatActivity() {
             2 -> {
                 binding.videoView.visibility = View.VISIBLE
                 binding.imageView.visibility = View.GONE
-                val videoUri = loadVideo(name, post.getString("videoLink"))
-                if (videoUri != null) {
-                    binding.videoView.setMediaController(MediaController(this@ViewPostActivity))
-                    binding.videoView.setVideoURI(videoUri)
-                    binding.videoView.start()
-                    uri=videoUri
-                    binding.videoView.setOnCompletionListener {
-                        it.seekTo(0)
-                        it.start()
-                    }
-                }
-                isImage = false
+                setVideo(loadVideo(name, post.getString("videoUrl")))
+                isImage=false
             }
             else -> {
                 loadCarousel(instagramURL)
@@ -213,7 +204,8 @@ class ViewPostActivity : AppCompatActivity() {
     }
 
 
-    private fun loadPhoto(name:String,imageLink: String?) : Uri?{
+    private fun loadPhoto(name:String,imageUrl: String?) : Uri?{
+        Log.d("tagg","loadPhoto called")
         try {
             val collection = sdk29AndUp {
                 MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
@@ -237,12 +229,13 @@ class ViewPostActivity : AppCompatActivity() {
             }
             return uri
         }catch(e:android.database.CursorIndexOutOfBoundsException){
-            if(imageLink!=null) {
+            e.printStackTrace()
+            if(imageUrl!=null) {
                 val alertDialog = AlertDialog.Builder(this@ViewPostActivity)
                     .setTitle("Image Not Found!")
                     .setMessage("The Image is Either deleted, renamed or moved to other media.")
                     .setPositiveButton("Download Again") { dialogInterface, _ ->
-                        download(imageLink, true, name)
+                        download(imageUrl, true, name)
                         dialogInterface.dismiss()
                     }
                     .setNegativeButton("Cancel") { dialogInterface, _ ->
@@ -254,7 +247,7 @@ class ViewPostActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadVideo(name:String, videoLink:String?): Uri?{
+    private fun loadVideo(name:String, videoUrl:String?): Uri?{
         try {
             val collection = sdk29AndUp {
                 MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
@@ -278,12 +271,13 @@ class ViewPostActivity : AppCompatActivity() {
             }
             return uri
         }catch(e:android.database.CursorIndexOutOfBoundsException){
-            if(videoLink!=null) {
+            Log.d("tagg","catch it $videoUrl")
+            if(videoUrl!=null) {
                 val alertDialog = AlertDialog.Builder(this@ViewPostActivity)
                     .setTitle("Video Not Found!")
                     .setMessage("The Video is Either deleted, renamed or moved to other media.")
                     .setPositiveButton("Download Again") { dialogInterface, _ ->
-                        download(videoLink, false, name)
+                        download(videoUrl, false, name)
                         dialogInterface.dismiss()
                     }
                     .setNegativeButton("Cancel") { dialogInterface, _ ->
@@ -347,6 +341,19 @@ class ViewPostActivity : AppCompatActivity() {
         captionDialog!!.show()
     }
 
+    private fun setVideo(videoUri:Uri?){
+        if (videoUri != null) {
+            binding.videoView.setMediaController(MediaController(this@ViewPostActivity))
+            binding.videoView.setVideoURI(videoUri)
+            binding.videoView.start()
+            uri=videoUri
+            binding.videoView.setOnCompletionListener {
+                it.seekTo(0)
+                it.start()
+            }
+        }
+    }
+
     private fun deleteFile(uri:Uri) {
         try {
             contentResolver.delete(uri, null, null)
@@ -397,6 +404,7 @@ class ViewPostActivity : AppCompatActivity() {
     }
 
     private fun download(link: String,isImage:Boolean,title:String){
+        Log.d("tagg","Inside download")
         val loadingDialog=Dialog(this)
         loadingDialog.setContentView(R.layout.download_loading_dialog)
         loadingDialog.show()
@@ -404,17 +412,21 @@ class ViewPostActivity : AppCompatActivity() {
         var downloadId=0L
         viewModel.downloadPost2(link,path,title)
         viewModel.downloadId.observe(this) {
+            Log.d("tagg","it changed")
             downloadId = it
         }
         lateinit var onComplete:BroadcastReceiver
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
+                Log.d("tagg","OnReciever")
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 if(id==downloadId){
                     if(isImage){
-                        loadPhoto(title,null)
+                        Log.d("tagg","title of file is: $title")
+                        binding.imageView.setImageURI(loadPhoto(title,null))
                     }else{
-                        loadVideo(title,null)
+                        Log.d("tagg","title of file is: $title")
+                        setVideo(loadVideo(title,null))
                     }
                     loadingDialog.dismiss()
                     unregisterReceiver(onComplete)
@@ -425,6 +437,8 @@ class ViewPostActivity : AppCompatActivity() {
 
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
+
+
 
 
 

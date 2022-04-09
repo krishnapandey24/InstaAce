@@ -1,5 +1,6 @@
 package com.omnicoder.instaace.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,6 +40,7 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     }
 
     fun downloadPost2(url: String, path:String,title: String){
+        Log.d("tagg","going to download")
         viewModelScope.launch(Dispatchers.IO) {
             downloadId.postValue(instagramRepository.directDownload(url,path,title))
         }

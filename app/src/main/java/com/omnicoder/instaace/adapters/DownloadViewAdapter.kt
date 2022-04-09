@@ -47,6 +47,8 @@ class DownloadViewAdapter( private val context:Context?,private val dataHolder: 
             postDetail.putString("username",post.username)
             postDetail.putString("profilePicture",post.profile_pic_url)
             postDetail.putString("instagram_url",post.link)
+            postDetail.putString("imageUrl",post.image_url)
+            postDetail.putString("videoUrl",post.video_url)
             viewIntent.putExtras(postDetail)
             context?.startActivity(viewIntent)
         }

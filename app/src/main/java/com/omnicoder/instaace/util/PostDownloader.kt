@@ -184,6 +184,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
 
 
     fun download(downloadLink: String?, path: String?, title: String?): Long {
+        Log.d("tagg","gonna download $downloadLink , $path , $title")
         val uri: Uri = Uri.parse(downloadLink)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
