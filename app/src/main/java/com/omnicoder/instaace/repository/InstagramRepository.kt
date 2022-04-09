@@ -20,13 +20,25 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
         }
     }
 
+    fun directDownload(link:String,path:String,title:String): Long{
+        return postDownloader.download(link,path,title)
+    }
+
     fun doesPostExits(url: String): Boolean{
         return postDao.doesPostExits(url)
     }
 
     fun getCarousel(giveMeTheLink: String): LiveData<List<Carousel>> {
         return postDao.getCarousel(giveMeTheLink)
+    }
 
+    fun deletePost(url:String){
+        postDao.deletePost(url)
+    }
+
+    fun deleteCarousel(url:String){
+        postDao.deletePost(url)
+        postDao.deleteCarousel(url)
     }
 
 

@@ -19,6 +19,7 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     val fileCount = instagramRepository.getFileCount
     val postExits= MutableLiveData<Boolean>()
     var downloadID= MutableLiveData<MutableList<Long>>()
+    var downloadId= MutableLiveData<Long>()
 
     private suspend fun doesPostExits(url: String):Boolean= withContext(Dispatchers.IO){
         instagramRepository.doesPostExits(url)
@@ -37,14 +38,30 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
         }
     }
 
+    fun downloadPost2(url: String, path:String,title: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            downloadId.postValue(instagramRepository.directDownload(url,path,title))
+        }
+    }
+
     fun getCarousel(giveMeTheLink: String): LiveData<List<Carousel>> {
         return instagramRepository.getCarousel(giveMeTheLink)
     }
 
 
-//    fun deletePost(url:String){
-//        TODO("Add this later")
-//    }
+    fun deletePost(url:String){
+        viewModelScope.launch (Dispatchers.IO){
+            instagramRepository.deletePost(url)
+        }
+    }
+
+    fun deleteCarousel(url:String){
+        viewModelScope.launch {
+            instagramRepository.deleteCarousel(url)
+        }
+    }
+
+
 
 
 

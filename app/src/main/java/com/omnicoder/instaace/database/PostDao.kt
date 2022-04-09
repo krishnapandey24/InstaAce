@@ -32,4 +32,13 @@ interface PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCarousel(carousel: Carousel)
 
+    @Query("DELETE FROM post_table WHERE link= :url")
+    fun deletePost(url: String)
+
+    @Query("DELETE FROM carousel_table WHERE link= :url")
+    fun deleteCarousel(url: String)
+
+
+
+
 }

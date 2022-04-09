@@ -2,7 +2,6 @@ package com.omnicoder.instaace.util
 
 import android.app.DownloadManager
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
@@ -12,7 +11,6 @@ import com.omnicoder.instaace.database.PostDao
 import com.omnicoder.instaace.model.Items
 import com.omnicoder.instaace.model.ShortCodeMedia
 import com.omnicoder.instaace.network.InstagramAPI
-import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 import javax.inject.Inject
 
 
@@ -185,7 +183,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
     }
 
 
-    private fun download(downloadLink: String?, path: String?, title: String?): Long {
+    fun download(downloadLink: String?, path: String?, title: String?): Long {
         val uri: Uri = Uri.parse(downloadLink)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
@@ -202,34 +200,13 @@ class PostDownloader @Inject constructor(private val context: Context,private va
         val index = link.indexOf("instagram.com")
         val totalIndex = index + 13
         var url = link.substring(totalIndex, link.length)
-        url = when {
-            url.contains("/?utm_source=ig_web_copy_link") -> url.replace("/?utm_source=ig_web_copy_link", "")
-            url.contains("/?utm_source=ig_web_button_share_sheet") -> url.replace("/?utm_source=ig_web_button_share_sheet", "")
-            url.contains("/?utm_medium=share_sheet") -> url.replace("/?utm_medium=share_sheet", "")
-            url.contains("/?utm_medium=copy_link") -> url.replace("/?utm_medium=copy_link", "")
-            else -> url
-        }
-        var length = url.length
-        if(url.last()==("/".last())){
-            url=url.dropLast(1)
-            length -= 1
-        }
-        return if(length>30){
-            url.substring(length- 39,length)
-        }else{
-            url.substring(length - 11, length)
-        }
-
+        url = url.split("/?")[0]
+        url= url.split("/")[2]
+        return url
     }
 
-
-
-
-
-
-
-
-
-
+//    private fun getPostCode2(link: String): String {
+//        return link.split("/")[4]
+//    }
 }
 
