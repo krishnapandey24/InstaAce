@@ -20,6 +20,8 @@ import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
+import android.util.Log
+import androidx.navigation.Navigation
 import com.omnicoder.instaace.TestActivity
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
@@ -49,7 +51,7 @@ open class HomeFragment : Fragment() {
         setOnClickListeners()
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
             if(cookies!=null) {
-                checkClipboard()
+//                checkClipboard()
             }
         }
         onComplete= object : BroadcastReceiver() {
@@ -68,17 +70,23 @@ open class HomeFragment : Fragment() {
 
         activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
+
     }
 
     private fun setOnClickListeners(){
         binding.backButton.setOnClickListener{
-           startActivity(Intent(context,TestActivity::class.java))
+            val intent=Intent(context,TestActivity::class.java)
+            intent.putExtra("cookie",cookies)
+            startActivity(intent)
         }
 
         binding.faqButton.setOnClickListener{
             startActivity(Intent(context,InstagramLoginActivity::class.java))
         }
 
+        binding.storyDownloader.setOnClickListener {
+            Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeToStoryFragment(cookies ?: ""))
+        }
 
 
         binding.downloadButton.setOnClickListener{
@@ -101,7 +109,7 @@ open class HomeFragment : Fragment() {
 
     private fun download(link:String){
         binding.progressBar.visibility= View.VISIBLE
-        viewModel.downloadPost(link, cookies)
+        viewModel.downloadPost(link,cookies)
         binding.editText.text.clear()
         load=true
     }
@@ -123,6 +131,7 @@ open class HomeFragment : Fragment() {
             setRecyclerView(it,context)
             size= it.size
         }
+
         viewModel.fileCount.observe(this){
             binding.fileCount.text=it.toString()
             if(it==0){

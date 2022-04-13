@@ -3,11 +3,13 @@ package com.omnicoder.instaace.repository
 import androidx.lifecycle.LiveData
 import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.PostDao
+import com.omnicoder.instaace.model.Story
 import com.omnicoder.instaace.util.PostDownloader
+import com.omnicoder.instaace.util.StoryDownloader
 import javax.inject.Inject
 
 
-class InstagramRepository @Inject constructor(private val postDao: PostDao,private val postDownloader: PostDownloader){
+class InstagramRepository @Inject constructor(private val postDao: PostDao,private val postDownloader: PostDownloader, private val storyDownloader: StoryDownloader){
     val getAllPost = postDao.getAllPosts()
     val getFileCount= postDao.getFileCount()
 
@@ -18,6 +20,10 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
         }else{
             postDownloader.fetchDownloadLink2(url)
         }
+    }
+
+    suspend fun fetchStory(url:String, map: String): MutableList<Story>{
+        return storyDownloader.fetchFromUrl(url,map)
     }
 
     fun directDownload(link:String,path:String,title:String): Long{
@@ -40,6 +46,8 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
         postDao.deletePost(url)
         postDao.deleteCarousel(url)
     }
+
+
 
 
 

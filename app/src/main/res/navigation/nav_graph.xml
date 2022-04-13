@@ -10,6 +10,10 @@
         android:name="com.omnicoder.instaace.ui.fragments.HomeFragment"
         android:label="home_fragment"
         tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_home_to_storyFragment"
+            app:destination="@id/storyFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/downloads"
@@ -21,4 +25,13 @@
         android:name="com.omnicoder.instaace.ui.fragments.WebViewFragment"
         android:label="web_view_fragment"
         tools:layout="@layout/web_view_fragment" />
+    <fragment
+        android:id="@+id/storyFragment"
+        android:name="com.omnicoder.instaace.ui.fragments.StoryFragment"
+        android:label="StoryFragment" >
+        <argument
+            android:name="cookie"
+            app:argType="string"
+            />
+    </fragment>
 </navigation>

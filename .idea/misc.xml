@@ -5,6 +5,8 @@
       <map>
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable-v23/download_button.xml" value="0.10260416666666666" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/back_arrow.xml" value="0.1707236842105263" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/black_back_arrow.xml" value="0.188" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/checkbox_selector.xml" value="0.2595" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/cicle.xml" value="0.221875" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/circular_image_view.xml" value="0.2703125" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/dot_selector.xml" value="0.1707236842105263" />
@@ -14,6 +16,7 @@
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_baseline_arrow_circle_down_24.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_baseline_arrow_circle_down_24_white.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.2595" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_baseline_closed_caption_24.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_baseline_closed_caption_off_24.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_baseline_link_24.xml" value="0.221875" />
@@ -39,10 +42,13 @@
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/ic_sleep_mode.xml" value="0.25625" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/instagram_gradient.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/main_color_line.xml" value="0.22760416666666666" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/not_selected.xml" value="0.2595" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/not_selected_dot.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/outline_for_button.xml" value="0.1707236842105263" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/rounded_corner_white_rectangle.xml" value="0.22760416666666666" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/selected_dot.xml" value="0.1707236842105263" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/story_selected.xml" value="0.2595" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/white_download_button.xml" value="0.2595" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/drawable/white_rectangle.xml" value="0.25625" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/activity_first_start.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/activity_instagram_login.xml" value="0.152" />
@@ -62,8 +68,11 @@
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/image_view_layout.xml" value="0.16052631578947368" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/loading_view_stub.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/post_item_layout.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/story_fragment.xml" value="0.19114583333333332" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/story_item_layout.xml" value="1.888235294117647" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/test.xml" value="0.264" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/video_view_layout.xml" value="0.16052631578947368" />
+        <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/view_story_activity.xml" value="0.16486486486486487" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/layout/web_view_fragment.xml" value="0.176" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
         <entry key="..\:/Users/krish/AndroidStudioProjects/InstaAce/app/src/main/res/menu/main_menu.xml" value="0.264" />

@@ -4,97 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/red"
     tools:context=".ui.activities.RequestLoginActivity">
 
+
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/ic_baseline_warning_24"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView2" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/roboto_bold"
-        android:textColor="@color/black"
-        android:text="Hold On!"
-        android:textSize="28sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/roboto_medium"
-        android:text="Unfortunately Instagram don't allow downloading more than 3-4 posts at once without login."
-        android:textColor="@color/main"
-        android:textSize="25sp"
+        android:id="@+id/imageView4"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/roboto"
-        android:textColor="@color/main"
-        android:text="You can login with a instagram account or you can wait 12hr to download again without login."
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/roboto_medium"
-        android:text="Note: We do no store your login information. But if you are still worried, You can just use any of your secondary or temporary instagram account. It not necessary to use your main account "
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="Login with Instagram"
-        android:padding="16dp"
-        android:background="@drawable/instagram_gradient"
-        android:drawableLeft="@drawable/ic_instagram_logo"
-        android:gravity="center"
-        android:paddingStart="18sp"
-        android:drawablePadding="21dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10"
-        tools:ignore="RtlHardcoded,RtlSymmetry" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/story_not_selected" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

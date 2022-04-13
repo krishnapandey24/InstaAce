@@ -5,6 +5,7 @@ import com.omnicoder.instaace.database.PostDao
 import com.omnicoder.instaace.network.InstagramAPI
 import com.omnicoder.instaace.util.Downloader
 import com.omnicoder.instaace.util.PostDownloader
+import com.omnicoder.instaace.util.StoryDownloader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,6 +41,12 @@ object NetworkModule {
     @Singleton
     fun providePostDownloader(@ApplicationContext appContext : Context,instagramAPI: InstagramAPI,postDao: PostDao): PostDownloader {
         return PostDownloader(appContext,instagramAPI,postDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStoryDownloader(@ApplicationContext appContext : Context,instagramAPI: InstagramAPI,postDao: PostDao): StoryDownloader {
+        return StoryDownloader(appContext,instagramAPI,postDao)
     }
 
 

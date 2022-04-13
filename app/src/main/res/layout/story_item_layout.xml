@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/story_item_imageview_width_and_height"
+        android:layout_height="@dimen/story_item_imageview_width_and_height"
+        android:scaleType="centerCrop"
+        android:src="@drawable/lisa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/mediaTypeIconView"
+        android:layout_width="@dimen/media_type_icon_size"
+        android:layout_height="@dimen/media_type_icon_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_play"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        tools:ignore="ContentDescription,ImageContrastCheck" />
+
+    <ImageView
+        android:id="@+id/selector"
+        android:layout_width="@dimen/media_type_icon_size"
+        android:layout_height="@dimen/media_type_icon_size"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/story_not_selected"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

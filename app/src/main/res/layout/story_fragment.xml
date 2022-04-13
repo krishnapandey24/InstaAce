@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="16dp"
-        android:src="@drawable/ic_baseline_menu_24"
+        android:src="@drawable/black_back_arrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
@@ -42,40 +42,13 @@
         android:id="@+id/InstaAce"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="InstaAce"
+        android:text="Story Downloader"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/instagramButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
-
-
-    <ImageButton
-        android:id="@+id/instagramButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="23dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_instagram_logo"
-        app:layout_constraintEnd_toStartOf="@+id/faqButton"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
-
-    <ImageButton
-        android:id="@+id/faqButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="9dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_question_mark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintBottom_toBottomOf="@+id/backButton"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="@+id/backButton" />
 
 
     <EditText
@@ -89,7 +62,7 @@
         android:drawableStart="@drawable/ic_link"
         android:drawablePadding="10dp"
         android:elevation="2dp"
-        android:hint="Paste url here"
+        android:hint="Paste story link or profile url here"
         android:inputType="textPersonName"
         android:padding="12dp"
         android:textSize="16sp"
@@ -109,42 +82,18 @@
         app:layout_constraintTop_toTopOf="@+id/editText"
         app:srcCompat="@drawable/ic_download__2_" />
 
-    <Button
-        android:id="@+id/storyDownloader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="StoryDownloader"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/roboto_medium"
-        android:text="History"
-        android:textColor="@color/textcolor"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storyDownloader" />
-
     <TextView
         android:id="@+id/fileCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/roboto_medium"
         android:text="55"
         android:textColor="@color/textcolor"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/downloadButton" />
 
     <TextView
         android:id="@+id/textView3"
@@ -165,11 +114,11 @@
         android:id="@+id/downloadView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
 
     <TextView
@@ -181,8 +130,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
