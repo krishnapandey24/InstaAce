@@ -7,15 +7,39 @@
     android:background="@color/red"
     tools:context=".ui.activities.RequestLoginActivity">
 
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="242dp"
+        android:layout_height="70dp"
+        android:text="Checked"
+        android:textColor="@color/black"
+        android:textSize="45dp"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="413dp" />
+
+    <TextView
+        android:id="@+id/textView0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Un Checked"
+        android:textSize="45dp"
+        android:textColor="@color/black"
+        tools:layout_editor_absoluteX="643dp"
+        tools:layout_editor_absoluteY="413dp" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/story_not_selected" />
+        android:layout_width="239dp"
+        android:layout_height="241dp"
+        app:srcCompat="@drawable/story_selected"
+        tools:layout_editor_absoluteX="119dp"
+        tools:layout_editor_absoluteY="124dp" />
 
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="249dp"
+        android:layout_height="227dp"
+        app:srcCompat="@drawable/story_not_selected"
+        tools:layout_editor_absoluteX="643dp"
+        tools:layout_editor_absoluteY="148dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

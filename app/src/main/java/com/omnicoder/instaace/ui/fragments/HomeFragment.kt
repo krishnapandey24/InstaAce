@@ -20,7 +20,6 @@ import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
-import android.util.Log
 import androidx.navigation.Navigation
 import com.omnicoder.instaace.TestActivity
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity

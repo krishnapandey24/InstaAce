@@ -1,150 +1,104 @@
 package com.omnicoder.instaace.ui.activities
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.DownloadManager
-import android.app.RecoverableSecurityException
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
-import android.view.MenuInflater
 import android.view.View
-import android.view.ViewStub
 import android.widget.MediaController
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.omnicoder.instaace.R
-import com.omnicoder.instaace.adapters.CarouselViewPagerAdapter
-import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.databinding.ViewStoryActivityBinding
-import com.omnicoder.instaace.model.CarouselMedia
-import com.omnicoder.instaace.util.Constants
-import com.omnicoder.instaace.util.InvalidLinkException
-import com.omnicoder.instaace.util.sdk29AndUp
-import com.omnicoder.instaace.viewmodels.HomeViewModel
+import com.omnicoder.instaace.model.Story
+import com.omnicoder.instaace.viewmodels.StoryViewModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.StringBuilder
-import java.util.regex.Pattern
 
 
 @AndroidEntryPoint
 class ViewStoryActivity : AppCompatActivity() {
     private lateinit var binding: ViewStoryActivityBinding
-    private var viewMore= true
     private lateinit var uri:Uri
-    private lateinit var viewModel:HomeViewModel
-    private var captionDialog: Dialog?= null
-    private lateinit var mediaList: List<CarouselMedia>
-    private lateinit var intentSenderLauncher : ActivityResultLauncher<IntentSenderRequest>
-    private var deletedImageUri: Uri?=null
-    private var notDeleted=true
+    private lateinit var viewModel:StoryViewModel
     private lateinit var username:String
     private var mediaType:Int=1
+    private lateinit var onComplete: BroadcastReceiver
     private var downloadLink:String?=null
+    private var downloadID: Long = 0
+    private lateinit var loadingDialog: Dialog
+    private var downloaded=false
+    private var position=-1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ViewStoryActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        viewModel = ViewModelProvider(this)[StoryViewModel::class.java]
         val story: Bundle?= intent.extras
+        val code: String=story?.getString("code") ?: System.currentTimeMillis().toString()
         mediaType= story?.getInt("media_type",1) ?: 1
         username= story?.getString("username") ?: ""
         val profilePicture= story?.getString("profilePicture")
+        val extension: String
+        val imageUrl= story?.getString("imageUrl")
+        val videoUrl =story?.getString("videoUrl")
+        position=story?.getInt("position",-1) ?: -1
         val picasso= Picasso.get()
         downloadLink=if(mediaType==1){
-            val imageUrl= story?.getString("imageUrl")
             binding.videoView.visibility = View.GONE
             picasso.load(imageUrl).into(binding.imageView)
+            extension=".jpg"
             imageUrl
         }else{
             binding.imageView.visibility = View.GONE
-            val videoUrl =story?.getString("videoUrl")
             setVideo(Uri.parse(videoUrl))
+            extension=".mp4"
             videoUrl
         }
         picasso.load(profilePicture).into(binding.profilePicView)
         binding.usernameView.text= username
-//        /setOnClickListeners(isImage,instagramURL,caption,username ?: "",isCarousel)
-//        initIntentSenderLauncher()
+
+        binding.backButton.setOnClickListener{
+            onBackPressed()
+        }
+
+        binding.downloadButton.setOnClickListener{
+            loadingDialog=Dialog(this)
+            loadingDialog.setContentView(R.layout.download_loading_dialog)
+            loadingDialog.show()
+            viewModel.downloadStoryDirect(Story(code,mediaType,imageUrl ?: "",videoUrl,username, profilePicture ?: "",
+                isSelected = false,
+                downloaded = true
+            ),extension,downloadLink ?: "")
+
+        }
+
+        viewModel.downloadId.observe(this) {
+            downloadID = it
+        }
+
+        onComplete= object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                if(id==downloadID){
+                    downloaded=true
+                    loadingDialog.dismiss()
+                    Toast.makeText(context,"Download complete",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+        registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
-
-//    private fun setOnClickListeners(isImage:Boolean,instagramUrl: String,caption:String,username:String,isCarousel:Boolean){
-//        val viewMore2 = "View More"
-//        val viewLess = "View Less"
-//        binding.viewMore.setOnClickListener {
-//            if (viewMore) {
-//                binding.captionView.maxLines = 30
-//                binding.viewMore.text = viewLess
-//            } else {
-//                binding.captionView.maxLines = 3
-//                binding.viewMore.text = viewMore2
-//            }
-//            viewMore = !viewMore
-//        }
-//        binding.backButton.setOnClickListener{
-//            finish()
-//        }
-//
-//        binding.repost.setOnClickListener{
-//            repost(caption, username,isImage)
-//        }
-//
-//        binding.caption.setOnClickListener{
-//            launchCaptionDialog(caption,username)
-//        }
-//
-//        binding.menu.setOnClickListener{
-//            val popup = PopupMenu(this, it)
-//            val inflater: MenuInflater = popup.menuInflater
-//            inflater.inflate(R.menu.view_post_menu, popup.menu)
-//            popup.setOnMenuItemClickListener { menuItem ->
-//                when(menuItem.itemId){
-//                    R.id.openInInstagram-> {
-//                        val uri= Uri.parse(instagramUrl)
-//                        val intent= Intent(Intent.ACTION_VIEW,uri)
-//                        intent.setPackage(Constants.INSTAGRAM)
-//                        startActivity(intent)
-//                    }
-//                    R.id.delete ->{
-//                        deletePost(instagramUrl,isCarousel)
-//                    }
-//                }
-//                true
-//            }
-//            popup.show()
-//
-//        }
-//
-//        binding.share.setOnClickListener{
-//            val intent = Intent(Intent.ACTION_SEND)
-//            val intentType=if(isImage){
-//                "image/jpeg"
-//            }else{
-//                "video/mp4"
-//            }
-//            intent.type = intentType
-//            intent.putExtra(Intent.EXTRA_STREAM, uri)
-//            startActivity(Intent.createChooser(intent, "Share"))
-//        }
-//
-//    }
-
 
     private fun setVideo(videoUri:Uri?){
         if (videoUri != null) {
@@ -158,6 +112,23 @@ class ViewStoryActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(onComplete)
+    }
+
+    override fun onBackPressed() {
+        Log.d("tagg","onBAckpross $position $downloaded")
+        val returnIntent= Intent()
+        returnIntent.putExtra("position",position)
+        returnIntent.putExtra("downloaded",downloaded)
+        setResult(Activity.RESULT_OK,returnIntent)
+        finish()
+        super.onBackPressed()
+
+    }
+
 
 
 

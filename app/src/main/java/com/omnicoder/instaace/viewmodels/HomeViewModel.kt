@@ -22,8 +22,6 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     var downloadID= MutableLiveData<MutableList<Long>>()
     var downloadId= MutableLiveData<Long>()
 
-
-
     private suspend fun doesPostExits(url: String):Boolean= withContext(Dispatchers.IO){
         instagramRepository.doesPostExits(url)
     }
