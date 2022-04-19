@@ -22,13 +22,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
 import androidx.navigation.Navigation
 import com.omnicoder.instaace.TestActivity
+import com.omnicoder.instaace.databinding.HomeFragment2Binding
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
 @AndroidEntryPoint
 open class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
-    private lateinit var binding: HomeFragmentBinding
+    private lateinit var binding: HomeFragment2Binding
     private var cookies: String?=null
     private var downloadID= mutableListOf<Long>()
     private lateinit var onComplete:BroadcastReceiver
@@ -37,7 +38,7 @@ open class HomeFragment : Fragment() {
     private var doItNow: Boolean=false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = HomeFragmentBinding.inflate(inflater, container, false)
+        binding = HomeFragment2Binding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -83,7 +84,7 @@ open class HomeFragment : Fragment() {
             startActivity(Intent(context,InstagramLoginActivity::class.java))
         }
 
-        binding.storyDownloader.setOnClickListener {
+        binding.storyButton.setOnClickListener {
             Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeToStoryFragment(cookies ?: ""))
         }
 

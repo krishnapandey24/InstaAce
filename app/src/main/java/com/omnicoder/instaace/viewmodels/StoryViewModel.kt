@@ -8,8 +8,6 @@ import com.omnicoder.instaace.repository.InstagramRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.security.cert.Extension
 import javax.inject.Inject
 
 
@@ -22,10 +20,6 @@ class StoryViewModel @Inject constructor(private val instagramRepository: Instag
         viewModelScope.launch(Dispatchers.IO) {
             stories.postValue(instagramRepository.fetchStory(url, map))
         }
-    }
-
-    private suspend fun doesPostExits(url: String):Boolean= withContext(Dispatchers.IO){
-        instagramRepository.doesPostExits(url)
     }
 
     fun downloadStory(story: Story){

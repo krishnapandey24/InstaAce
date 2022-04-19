@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,12 +85,10 @@ class StoryFragment : Fragment() {
         }
         activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            Log.d("tagg","we got somehting: $result")
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent: Intent? = result.data
                 val downloaded=intent?.getBooleanExtra("downloaded",true) ?: true
                 val position=intent?.getIntExtra("position",-1) ?: -1
-                Log.d("tagg","after coming back: $downloaded $position")
                 if(downloaded && position!=-1){
                     adapter.dataHolder[position].downloaded=true
                     adapter.notifyItemChanged(position)

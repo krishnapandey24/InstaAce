@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewStub
@@ -52,7 +51,6 @@ class ViewPostActivity : AppCompatActivity() {
     private lateinit var intentSenderLauncher : ActivityResultLauncher<IntentSenderRequest>
     private var deletedImageUri: Uri?=null
     private var notDeleted=true
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +99,6 @@ class ViewPostActivity : AppCompatActivity() {
     }
 
     private fun loadCarousel(link:String){
-        Log.d("tagg","load carousel got called")
         val viewStub= binding.viewStub.inflate()
         val viewPager:ViewPager2= viewStub.findViewById(R.id.viewpager)
         viewModel.getCarousel(link).observe(this){
@@ -207,7 +204,6 @@ class ViewPostActivity : AppCompatActivity() {
 
 
     private fun loadPhoto(name:String,imageUrl: String?) : Uri?{
-        Log.d("tagg","loadPhoto called")
         try {
             val collection = sdk29AndUp {
                 MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
@@ -273,7 +269,6 @@ class ViewPostActivity : AppCompatActivity() {
             }
             return uri
         }catch(e:android.database.CursorIndexOutOfBoundsException){
-            Log.d("tagg","catch it $videoUrl")
             if(videoUrl!=null) {
                 val alertDialog = AlertDialog.Builder(this@ViewPostActivity)
                     .setTitle("Video Not Found!")

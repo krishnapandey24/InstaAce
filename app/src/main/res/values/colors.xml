@@ -14,6 +14,14 @@
     <color name="main">#30A6A6</color>
     <color name="main2">#c030A6A6</color>
     <color name="red">#cf0840</color>
+    <color name="fancy_red">#F77878</color>
+    <color name="fancy_red2">#4DF77878</color>
+
+    <color name="orange">#FE9E62</color>
+    <color name="orange2">#4dFE9E62</color>
+    <color name="purple">#6155CC</color>
+    <color name="purple2">#4d6155CC</color>
+
 <!--    <color name="instagramBlue">#0095F6</color>-->
     <color name="instagramBlue">#857d60dc</color>
     <color name="buttonText">@color/white</color>
