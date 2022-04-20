@@ -4,6 +4,7 @@
     <dimen name="download_view_post_image_width">100dp</dimen>
     <dimen name="download_view_post_image_height">120dp</dimen>
     <dimen name="download_view_user_profile_pic_width_and_height">36dp</dimen>
+    <dimen name="reel_tray_imageview_width_and_height">81dp</dimen>
     <dimen name="story_item_imageview_width_and_height">123dp</dimen>
     <dimen name="media_type_icon_size">15dp</dimen>
 

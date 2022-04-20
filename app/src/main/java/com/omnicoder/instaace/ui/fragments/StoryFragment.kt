@@ -8,16 +8,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -61,10 +63,11 @@ class StoryFragment : Fragment() {
                     selecting=false
                     binding.downloadButton.visibility=View.GONE
                 }else{
-                    findNavController().popBackStack()
+                    NavHostFragment.findNavController(this@StoryFragment).navigateUp()
                 }
             }
         })
+
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
@@ -73,11 +76,13 @@ class StoryFragment : Fragment() {
                     adapter.isEnabled=false
                     val selectedStories: List<Int> = adapter.selectedStories
                     for(position in selectedStories){
+                        Log.d("tagg","loop position $position ${adapter.dataHolder[position].name}")
                         adapter.dataHolder[position].downloaded=true
                     }
                     selecting=false
-                    adapter.notifyDataSetChanged()
                     adapter.reset()
+                    adapter.notifyDataSetChanged()
+                    binding.downloadButton.visibility=View.GONE
                     Toast.makeText(context,"Download complete",Toast.LENGTH_SHORT).show()
                 }
 
@@ -99,13 +104,24 @@ class StoryFragment : Fragment() {
 
 
     private fun observeData(context: Context?){
-        viewModel.stories.observe(this){
+        viewModel.stories.observe(viewLifecycleOwner){
             setRecyclerView(it,context)
-            binding.fileCount.text=it.size.toString()
+            val size=it.size
+            binding.fileCount.text=size.toString()
             stories=it
+            binding.progressBar.visibility=View.GONE
+            if(size<1){
+                if(binding.noStoriesFoundViewStub.parent!=null){
+                    binding.noStoriesFoundViewStub.inflate()
+                }else{
+                    binding.noStoriesFoundViewStub.visibility=View.VISIBLE
+                }
+            }else{
+                binding.noStoriesFoundViewStub.visibility=View.GONE
+            }
         }
 
-        viewModel.downloadId.observe(this){
+        viewModel.downloadId.observe(viewLifecycleOwner){
             downloadIds.add(it)
         }
 
@@ -113,12 +129,15 @@ class StoryFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.fetchButton.setOnClickListener{
+            binding.progressBar.visibility=View.VISIBLE
             viewModel.fetchStory(binding.editText.text.toString(),cookies)
+            hideKeyboard()
+            binding.editText.text.clear()
         }
 
         binding.downloadButton.setOnClickListener {
             adapter.loading=true
-            val selectedStories: List<Int> =adapter.selectedStories
+            val selectedStories: List<Int> = adapter.selectedStories
             for(position in selectedStories){
                 adapter.notifyItemChanged(position)
                 viewModel.downloadStory(stories[position])
@@ -126,7 +145,7 @@ class StoryFragment : Fragment() {
         }
 
         binding.backButton.setOnClickListener{
-            findNavController().popBackStack()
+            NavHostFragment.findNavController(this@StoryFragment).navigateUp()
         }
     }
 
@@ -145,14 +164,28 @@ class StoryFragment : Fragment() {
         binding.downloadButton.visibility=View.VISIBLE
     }
 
+    private fun fetchStories(){
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchStories()
+    }
+
+
+    private fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    private fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         activity?.unregisterReceiver(onComplete)
     }
-
-
-
 
 }

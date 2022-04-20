@@ -6,7 +6,7 @@
             <solid android:color="@color/orange2"/>
         </shape>
     </item>
-    <item android:drawable="@drawable/ic_play_story"
+    <item android:drawable="@drawable/ic_background__1_"
         android:top="26dp"
         android:bottom="26dp"
         android:right="34dp"

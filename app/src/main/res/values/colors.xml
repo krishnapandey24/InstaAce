@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="backgroundForCaption">#D9000000</color>
     <color name="transparent_black">#4D000000</color>
@@ -23,10 +19,6 @@
     <color name="purple2">#4d6155CC</color>
 
 <!--    <color name="instagramBlue">#0095F6</color>-->
-    <color name="instagramBlue">#857d60dc</color>
-    <color name="buttonText">@color/white</color>
-    <color name="grey">#d6d7db</color>
-    <color name="grey2">#ececec</color>
     <color name="backgroundColor">#f3f4f8</color>
     <color name="editTextBackground">@color/white</color>
     <color name="textcolor">@color/black</color>

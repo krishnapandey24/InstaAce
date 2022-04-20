@@ -1,9 +1,6 @@
 package com.omnicoder.instaace.network
 
-import com.omnicoder.instaace.model.InstagramResponse
-import com.omnicoder.instaace.model.Response
-import com.omnicoder.instaace.model.StoryResponse
-import com.omnicoder.instaace.model.UserGraphQL
+import com.omnicoder.instaace.model.*
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -22,6 +19,13 @@ interface InstagramAPI {
 
     @GET
     suspend fun getStories(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): StoryResponse
+
+    @GET
+    suspend fun getReelsTray(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): ReelTrayResponse
+
+    @GET
+    suspend fun getReel(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): ReelTrayResponse
+
 
 
 

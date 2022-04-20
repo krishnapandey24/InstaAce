@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaAce">
         <activity
+            android:name=".ui.activities.WatchStoriesActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.RequestLoginActivity"
             android:exported="false" />
         <activity
@@ -29,9 +32,7 @@
         <activity
             android:name=".TestActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan" >
-
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".ui.activities.FirstStartActivity"
             android:exported="false" />

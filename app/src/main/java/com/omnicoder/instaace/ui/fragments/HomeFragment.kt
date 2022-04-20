@@ -22,36 +22,33 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
 import androidx.navigation.Navigation
 import com.omnicoder.instaace.TestActivity
-import com.omnicoder.instaace.databinding.HomeFragment2Binding
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
 @AndroidEntryPoint
 open class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
-    private lateinit var binding: HomeFragment2Binding
+    private lateinit var binding: HomeFragmentBinding
     private var cookies: String?=null
     private var downloadID= mutableListOf<Long>()
     private lateinit var onComplete:BroadcastReceiver
     private var size: Int= 0
     private var load: Boolean=false
-    private var doItNow: Boolean=false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = HomeFragment2Binding.inflate(inflater, container, false)
+        binding = HomeFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-        observeData(context)
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
         cookies= sharedPreferences?.getString("loginCookies",null)
         setOnClickListeners()
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
             if(cookies!=null) {
-//                checkClipboard()
+                checkClipboard()
             }
         }
         onComplete= object : BroadcastReceiver() {
@@ -85,7 +82,11 @@ open class HomeFragment : Fragment() {
         }
 
         binding.storyButton.setOnClickListener {
-            Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeToStoryFragment(cookies ?: ""))
+            if (cookies == null) {
+                startActivity(Intent(context, RequestLoginActivity::class.java))
+            } else {
+                Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeToStoryFragment(cookies ?: ""))
+            }
         }
 
 
@@ -127,12 +128,12 @@ open class HomeFragment : Fragment() {
     }
 
     private fun observeData(context: Context?) {
-        viewModel.allPosts.observe(this){
+        viewModel.allPosts.observe(viewLifecycleOwner){
             setRecyclerView(it,context)
             size= it.size
         }
 
-        viewModel.fileCount.observe(this){
+        viewModel.fileCount.observe(viewLifecycleOwner){
             binding.fileCount.text=it.toString()
             if(it==0){
                 binding.noDownloadsTextView.visibility=View.VISIBLE
@@ -142,7 +143,7 @@ open class HomeFragment : Fragment() {
         }
 
 
-        viewModel.postExits.observe(this){
+        viewModel.postExits.observe(viewLifecycleOwner){
             if (it){
                 binding.editText.text.clear()
                 viewModel.postExits.value=false
@@ -151,7 +152,7 @@ open class HomeFragment : Fragment() {
             }
         }
 
-        viewModel.downloadID.observe(this){
+        viewModel.downloadID.observe(viewLifecycleOwner){
             if(it.isNotEmpty() && it[0]==3L){
                 binding.progressBar.visibility=View.GONE
                 startActivity(Intent(context, RequestLoginActivity::class.java))
@@ -174,7 +175,8 @@ open class HomeFragment : Fragment() {
             val url = link.substring(totalIndex, link.length)
             isInstagramLink=url.length >= 14
         }
-        return isInstagramLink
+        val isPostLink= link.contains("p") || link.contains("tv") || link.contains("reel")
+        return isInstagramLink && isPostLink
     }
 
     private fun setRecyclerView(posts: List<Post>,context: Context?) {
@@ -196,11 +198,17 @@ open class HomeFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         activity?.unregisterReceiver(onComplete)
     }
+
+    override fun onResume() {
+        super.onResume()
+        observeData(context)
+
+    }
+
 
 
 }

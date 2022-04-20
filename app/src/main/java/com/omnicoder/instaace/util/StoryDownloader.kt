@@ -23,7 +23,7 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
              val link = Constants.STORY_DOWNLOAD.format(user.id)
              val items = instagramAPI.getStories(link, cookie, Constants.USER_AGENT).reel.items
              for(item in items){
-                 stories.add(Story(item.code,item.media_type,item.image_versions2.candidates[0].url, item.video_versions?.get(0)?.url,user.username,user.profile_pic_url))
+                 stories.add(Story(item.code,item.media_type,item.image_versions2.candidates[0].url, item.video_versions?.get(0)?.url,user.username,user.profile_pic_url, name = null))
              }
          }catch (e:Exception){
              e.printStackTrace()
@@ -44,6 +44,7 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
         val code= story.code
         val currentTime= System.currentTimeMillis()
         val title="${username}_${currentTime}$extension"
+        story.name=title
         val caption="${username}'s story from ${formatter.format(currentTime)}"
         postDao.insertPost(Post(code,story.mediaType,username,story.profilePicUrl,story.imageUrl,story.videoUrl,caption,null,null,null,extension,title,code,false))
         return download(downloadLink,Constants.STORY_FOLDER_NAME,title)

@@ -3,7 +3,6 @@ package com.omnicoder.instaace.adapters
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,18 +60,23 @@ class StoryViewAdapter(private val context:Context?, val dataHolder: List<Story>
                 storyDetail.putString("imageUrl", story.imageUrl)
                 storyDetail.putString("videoUrl", story.videoUrl)
                 storyDetail.putInt("position",position)
+                storyDetail.putBoolean("alreadyDownloaded",story.downloaded)
+                storyDetail.putString("name",story.name)
                 viewIntent.putExtras(storyDetail)
                 resultLauncher.launch(viewIntent)
-//                context?.startActivity(viewIntent)
             }
         }
-
         if(loading){
             holder.loadingViewStub.inflate()
+            holder.selector.visibility= View.GONE
+        }else{
+            holder.loadingViewStub.visibility=View.GONE
         }
 
         if(story.downloaded){
             holder.downloaded.visibility= View.VISIBLE
+        }else{
+            holder.downloaded.visibility=View.GONE
         }
 
         holder.layout.setOnLongClickListener {

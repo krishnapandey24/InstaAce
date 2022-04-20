@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.omnicoder.instaace.database.Carousel
+import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.repository.InstagramRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,9 @@ class HomeViewModel @Inject constructor(private val instagramRepository: Instagr
     private suspend fun doesPostExits(url: String):Boolean= withContext(Dispatchers.IO){
         instagramRepository.doesPostExits(url)
     }
+
+
+
 
     fun downloadPost(url: String, map: String?){
         viewModelScope.launch(Dispatchers.IO) {

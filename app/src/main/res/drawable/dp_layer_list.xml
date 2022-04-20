@@ -7,7 +7,7 @@
         </shape>
 
     </item>
-    <item android:drawable="@drawable/ic_user__2_"
+    <item android:drawable="@drawable/ic_fullprogf"
         android:top="26dp"
         android:bottom="26dp"
         android:right="34dp"
