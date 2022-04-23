@@ -57,6 +57,7 @@ class StoryFragment : Fragment() {
         viewModel = ViewModelProvider(this)[StoryViewModel::class.java]
         val args: StoryFragmentArgs by navArgs()
         cookies= args.cookie
+        fetchStories()
         observeData(context)
         setOnClickListeners()
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner,object: OnBackPressedCallback(true){
@@ -72,27 +73,7 @@ class StoryFragment : Fragment() {
             }
         })
 
-        onComplete= object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                downloadIds.remove(id)
-                if(downloadIds.isEmpty()){
-                    adapter.isEnabled=false
-                    val selectedStories: List<Int> = adapter.selectedStories
-                    for(position in selectedStories){
-                        Log.d("tagg","loop position $position ${adapter.dataHolder[position].name}")
-                        adapter.dataHolder[position].downloaded=true
-                    }
-                    selecting=false
-                    adapter.reset()
-                    adapter.notifyDataSetChanged()
-                    binding.downloadButton.visibility=View.GONE
-                    Toast.makeText(context,"Download complete",Toast.LENGTH_SHORT).show()
-                }
 
-            }
-        }
-        activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent: Intent? = result.data
@@ -192,7 +173,27 @@ class StoryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        fetchStories()
+        onComplete= object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                downloadIds.remove(id)
+                if(downloadIds.isEmpty()  ){
+                    adapter.isEnabled=false
+                    val selectedStories: List<Int> = adapter.selectedStories
+                    for(position in selectedStories){
+                        adapter.dataHolder[position].downloaded=true
+                    }
+                    selecting=false
+                    adapter.reset()
+                    adapter.notifyDataSetChanged()
+                    binding.downloadButton.visibility=View.GONE
+                    Toast.makeText(context,"Download complete",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+        activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        Log.d("tagg","on Resume called")
     }
 
 
@@ -205,9 +206,20 @@ class StoryFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(onComplete)
+        Log.d("tagg","Story Fragment onPause")
+    }
+
+
+
     override fun onDestroy() {
         super.onDestroy()
         activity?.unregisterReceiver(onComplete)
+        Log.d("tagg","Story Fragment onDestroyh")
     }
+
+
 
 }

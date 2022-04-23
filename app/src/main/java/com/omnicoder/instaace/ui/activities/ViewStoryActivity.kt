@@ -82,6 +82,7 @@ class ViewStoryActivity : AppCompatActivity() {
         binding.downloadButton.setOnClickListener{
             loadingDialog=Dialog(this)
             loadingDialog.setContentView(R.layout.download_loading_dialog)
+            loadingDialog.setCancelable(false)
             loadingDialog.show()
             viewModel.downloadStoryDirect(Story(code,mediaType,imageUrl ?: "",videoUrl,username, profilePicture ?: "",
                 isSelected = false,

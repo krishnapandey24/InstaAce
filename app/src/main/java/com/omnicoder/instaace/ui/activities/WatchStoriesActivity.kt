@@ -1,15 +1,23 @@
 package com.omnicoder.instaace.ui.activities
 
-import android.media.MediaPlayer
+import android.app.Dialog
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.MediaController
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.omnicoder.instaace.R
 import com.omnicoder.instaace.databinding.ActivityWatchStoriesBinding
 import com.omnicoder.instaace.model.ReelMedia
+import com.omnicoder.instaace.model.ReelTray
+import com.omnicoder.instaace.model.Story
 import com.omnicoder.instaace.util.storyviewer.StoriesProgressView
 import com.omnicoder.instaace.viewmodels.StoryViewModel
 import com.squareup.picasso.Callback
@@ -22,7 +30,12 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
     private lateinit var viewModel: StoryViewModel
     private val reelMediaList: MutableList<ReelMedia> = mutableListOf()
     private var counter=0
-
+    private var imageUrl=""
+    private lateinit var loadingDialog: Dialog
+    private var videoUrl: String?=null
+    private lateinit var reelTray: ReelTray
+    private lateinit var onDownloadComplete: BroadcastReceiver
+    private var downloadID: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +46,33 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
         val cookie: String=intent.getStringExtra("cookie") ?: ""
         viewModel.fetchReelMedia(reelId,cookie)
         binding.stories.setStoriesListener(this@WatchStoriesActivity)
+        loadingDialog=Dialog(this)
+        loadingDialog.setContentView(R.layout.download_loading_dialog)
+        loadingDialog.setCancelable(false)
+        observeData()
+        setOnClickListener()
+        onDownloadComplete= object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                if(id==downloadID){
+                    reelTray.items[counter].downloaded=true
+                    loadingDialog.dismiss()
+                    binding.stories.resume()
+                    Toast.makeText(context,"Download complete", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+        registerReceiver(onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+
+    }
+
+    private fun observeData(){
         viewModel.reelMedia.observe(this) {
             if (it != null) {
+                reelTray=it
                 val user = it.user
+                Log.d("tagg","you the items here: ${it.items.size}")
                 Picasso.get().load(user.profile_pic_url).into(binding.profilePicView)
                 binding.usernameView.text=user.username
                 val items=it.items
@@ -53,12 +90,36 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
                 setStory()
             }
         }
-        binding.profilePicView.setOnClickListener{
+
+
+        viewModel.downloadId.observe(this) {
+            downloadID = it
+        }
+
+    }
+
+    private fun setOnClickListener() {
+        binding.profilePicView.setOnClickListener {
             binding.stories.pause()
         }
 
-        binding.usernameView.setOnClickListener{
+        binding.usernameView.setOnClickListener {
             binding.stories.resume()
+        }
+
+        binding.downloadButton.setOnClickListener {
+            binding.stories.pause()
+            loadingDialog.show()
+            val item = reelTray.items[counter]
+            if (item.downloaded) {
+                Toast.makeText(this, "Already Downloaded", Toast.LENGTH_SHORT).show()
+            } else {
+                viewModel.downloadStory(Story(item.code,item.media_type,item.image_versions2.candidates[0].url,videoUrl,reelTray.user.username,reelTray.user.profile_pic_url,
+                    isSelected = false,
+                    downloaded = false,
+                    name = null
+                ))
+            }
         }
 
     }
@@ -80,18 +141,17 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
     }
 
     private fun changeMedia(reelMedia: ReelMedia, index: Int){
-        Log.d("tagg","chaningmedia")
         binding.progressBar.visibility=View.VISIBLE
         if(reelMedia.isImage){
             Log.d("tagg","it is image ${reelMedia.uri}")
             binding.videoView.visibility = View.GONE
             binding.imageView.visibility= View.VISIBLE
+            imageUrl=reelMedia.uri
             Picasso.get().load(reelMedia.uri).into(binding.imageView, object : Callback {
                 override fun onSuccess() {
-                    Log.d("tagg","image llade")
                     binding.progressBar.visibility= View.GONE
-                    try{
-                    binding.stories.resume()}catch (e: Exception){e.printStackTrace()}
+                    binding.stories.resume()
+
                 }
                 override fun onError(e: Exception?) {
                     e?.printStackTrace()
@@ -99,63 +159,47 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
 
             })
         }else{
-            Log.d("tagg","is a video")
             binding.imageView.visibility = View.GONE
+            videoUrl=reelMedia.uri
             val videoUri: Uri?= Uri.parse(reelMedia.uri)
-            Log.d("tagg","video uri $videoUri and url: ${reelMedia.uri}")
             setVideo(videoUri,index)
         }
     }
 
     private fun setVideo(videoUri:Uri?,index: Int){
-        Log.d("tagg","setting the video: yes")
         if (videoUri != null) {
-            Log.d("tagg","not null")
             binding.videoView.setVideoURI(videoUri)
-            Log.d("tagg","setting vdoe ueri")
-            Log.d("tagg","starting")
-                    binding.videoView.visibility= View.VISIBLE
-            binding.videoView.start()
-            val onInfoToPlayStateListener: MediaPlayer.OnInfoListener = MediaPlayer.OnInfoListener { mp, what, _ ->
-                val duration: Long=mp.duration.toLong()
+            binding.videoView.visibility= View.VISIBLE
+            binding.videoView.setOnPreparedListener {
+                val duration: Long= it.duration.toLong()
                 binding.stories.progressBars[index].animation.duration=duration
-
-                if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                    binding.progressBar.visibility = View.GONE
-                    binding.stories.resume()
-                    Log.d("tagg","starting in the if")
-
-                }else{
-                    Log.d("tagg"," what $what")
-                }
-                false
+                binding.videoView.start()
+                binding.progressBar.visibility = View.GONE
+                binding.stories.resume()
             }
-            binding.videoView.setOnInfoListener(onInfoToPlayStateListener)
-
-
         }
     }
 
     override fun onNext() {
         counter += 1
-        Log.d("tagg","OnNext $counter")
         changeMedia(reelMediaList[counter],counter)
     }
 
     override fun onPrev() {
-        Log.d("tagg","OnPrev")
         if((counter -1 ) <0 ) return
         changeMedia(reelMediaList[--counter],counter)
     }
 
     override fun onComplete() {
-        Log.d("tagg","Completed")
         finish()
     }
 
     override fun onDestroy() {
         binding.stories.destroy()
         super.onDestroy()
+        if(this::onDownloadComplete.isInitialized){
+            unregisterReceiver(onDownloadComplete)
+        }
     }
 
 
