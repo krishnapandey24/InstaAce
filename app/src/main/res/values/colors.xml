@@ -25,6 +25,12 @@
     <color name="white_rectangle_background">@color/white</color>
     <color name="textColor">#647380</color>
 
+    <color name="progress_primary">@color/white</color>
+    <color name="progress_secondary">@color/gray_scale</color>
+    <color name="progress_max_active">@color/white</color>
+    <color name="gray_scale">#8affffff</color>
+
+
 
 
 </resources>

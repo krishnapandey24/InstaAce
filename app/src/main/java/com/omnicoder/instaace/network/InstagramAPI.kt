@@ -24,7 +24,7 @@ interface InstagramAPI {
     suspend fun getReelsTray(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): ReelTrayResponse
 
     @GET
-    suspend fun getReel(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): ReelTrayResponse
+    suspend fun getReelMedia(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): ReelMediaResponse
 
 
 

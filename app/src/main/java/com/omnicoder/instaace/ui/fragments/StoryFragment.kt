@@ -22,9 +22,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.omnicoder.instaace.adapters.ReelTrayAdapter
 import com.omnicoder.instaace.adapters.StoryViewAdapter
 import com.omnicoder.instaace.databinding.StoryFragmentBinding
+import com.omnicoder.instaace.model.ReelTray
 import com.omnicoder.instaace.model.Story
 import com.omnicoder.instaace.viewmodels.StoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,6 +45,7 @@ class StoryFragment : Fragment() {
     private lateinit var onComplete: BroadcastReceiver
     private val downloadIds: MutableList<Long> = mutableListOf()
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var reelTrays: MutableList<ReelTray>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding= StoryFragmentBinding.inflate(inflater,container,false)
@@ -106,11 +110,9 @@ class StoryFragment : Fragment() {
     private fun observeData(context: Context?){
         viewModel.stories.observe(viewLifecycleOwner){
             setRecyclerView(it,context)
-            val size=it.size
-            binding.fileCount.text=size.toString()
             stories=it
             binding.progressBar.visibility=View.GONE
-            if(size<1){
+            if(it.isEmpty()){
                 if(binding.noStoriesFoundViewStub.parent!=null){
                     binding.noStoriesFoundViewStub.inflate()
                 }else{
@@ -119,6 +121,8 @@ class StoryFragment : Fragment() {
             }else{
                 binding.noStoriesFoundViewStub.visibility=View.GONE
             }
+            binding.clearButton.visibility=View.VISIBLE
+
         }
 
         viewModel.downloadId.observe(viewLifecycleOwner){
@@ -133,6 +137,11 @@ class StoryFragment : Fragment() {
             viewModel.fetchStory(binding.editText.text.toString(),cookies)
             hideKeyboard()
             binding.editText.text.clear()
+        }
+
+        binding.clearButton.setOnClickListener{
+            setReelTrayRecyclerView()
+            binding.clearButton.visibility=View.GONE
         }
 
         binding.downloadButton.setOnClickListener {
@@ -158,6 +167,12 @@ class StoryFragment : Fragment() {
         recyclerView.adapter = adapter
     }
 
+    private fun setReelTrayRecyclerView() {
+        val recyclerView: RecyclerView = binding.downloadView
+        recyclerView.layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        recyclerView.adapter = ReelTrayAdapter(context,reelTrays,cookies)
+    }
+
     private fun showDownload(){
         adapter.notifyDataSetChanged()
         selecting=true
@@ -165,7 +180,14 @@ class StoryFragment : Fragment() {
     }
 
     private fun fetchStories(){
-
+        viewModel.fetchReelTray(cookies)
+        viewModel.reelTray.observe(viewLifecycleOwner) {
+            reelTrays=it.toMutableList()
+            if(reelTrays[0].user==null){
+                reelTrays.removeAt(0)
+            }
+            setReelTrayRecyclerView()
+        }
     }
 
     override fun onResume() {

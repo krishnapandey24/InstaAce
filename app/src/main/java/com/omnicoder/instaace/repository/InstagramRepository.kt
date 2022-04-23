@@ -3,6 +3,7 @@ package com.omnicoder.instaace.repository
 import androidx.lifecycle.LiveData
 import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.PostDao
+import com.omnicoder.instaace.model.ReelTray
 import com.omnicoder.instaace.model.Story
 import com.omnicoder.instaace.util.PostDownloader
 import com.omnicoder.instaace.util.StoryDownloader
@@ -56,6 +57,14 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
     fun deleteCarousel(url:String){
         postDao.deletePost(url)
         postDao.deleteCarousel(url)
+    }
+
+    suspend fun fetchReelTray(cookie: String): List<ReelTray>{
+        return storyDownloader.fetchReelTray(cookie)
+    }
+
+    suspend fun fetchReelMedia(reelId: Long,cookie: String): ReelTray?{
+        return storyDownloader.getReelMedia(reelId,cookie)
     }
 
 

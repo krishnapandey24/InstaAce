@@ -47,9 +47,9 @@ open class HomeFragment : Fragment() {
         cookies= sharedPreferences?.getString("loginCookies",null)
         setOnClickListeners()
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
-            if(cookies!=null) {
-                checkClipboard()
-            }
+//            if(cookies!=null) {
+//                checkClipboard()
+//            }
         }
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -200,7 +200,9 @@ open class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        activity?.unregisterReceiver(onComplete)
+        if(this::onComplete.isInitialized){
+            activity?.unregisterReceiver(onComplete)
+        }
     }
 
     override fun onResume() {

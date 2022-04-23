@@ -8,7 +8,6 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.MediaController
 import android.widget.Toast
@@ -56,7 +55,6 @@ class ViewStoryActivity : AppCompatActivity() {
         val name: String= story?.getString("name") ?: ""
         position=story?.getInt("position",-1) ?: -1
         val picasso= Picasso.get()
-        Log.d("tagg","so here it: $alreadyDownloaded $name")
         downloadLink=if(mediaType==1){
             binding.videoView.visibility = View.GONE
             if(alreadyDownloaded){
@@ -177,7 +175,7 @@ class ViewStoryActivity : AppCompatActivity() {
             binding.videoView.setVideoURI(videoUri)
             binding.videoView.start()
             uri=videoUri
-            val onInfoToPlayStateListener: MediaPlayer.OnInfoListener = MediaPlayer.OnInfoListener { _, what, _ ->
+            val onInfoToPlayStateListener: MediaPlayer.OnInfoListener = MediaPlayer.OnInfoListener { mp, what, _ ->
                     if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
                         binding.progressBar.visibility = View.GONE
                     }

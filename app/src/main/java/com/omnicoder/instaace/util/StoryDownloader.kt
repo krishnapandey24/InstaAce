@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Environment
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.database.PostDao
+import com.omnicoder.instaace.model.ReelTray
 import com.omnicoder.instaace.model.Story
 import com.omnicoder.instaace.network.InstagramAPI
 import java.text.SimpleDateFormat
@@ -59,6 +60,9 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
         return download(downloadLink,Constants.STORY_FOLDER_NAME,title)
     }
 
+    suspend fun fetchReelTray(cookie: String): List<ReelTray>{
+        return instagramAPI.getReelsTray(Constants.REEL_TRAY, cookie, Constants.USER_AGENT).tray
+    }
 
     fun download(downloadLink: String?, path: String?, title: String?): Long {
         val uri: Uri = Uri.parse(downloadLink)
@@ -72,6 +76,9 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
         return (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
     }
 
-
+    suspend fun getReelMedia(reelId: Long,cookie: String): ReelTray?{
+        val link=Constants.REEL_MEDIA.format(reelId)
+        return instagramAPI.getReelMedia(link,cookie,Constants.USER_AGENT).reels[reelId.toString()]
+    }
 }
 

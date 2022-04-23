@@ -12,11 +12,10 @@ object Constants {
     const val CAROUSEL= "GraphSidecar"
     const val IMAGE="GraphImage"
     const val VIDEO="GraphVideo"
-//    const val STORY_DOWNLOAD="https://i.instagram.com/api/v1/feed/reels_media/?reel_ids="
+    const val REEL_MEDIA="https://i.instagram.com/api/v1/feed/reels_media/?reel_ids=%s"
     const val STORY_DOWNLOAD="https://i.instagram.com/api/v1/feed/user/%s/story/"
     const val USER_AGENT="Instagram 76.0.0.15.395 Android (24/7.0; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890; en_US; 138226743)"
+    const val REEL_TRAY="https://i.instagram.com/api/v1/feed/reels_tray/"
     const val A1="?__a=1"
-
-
 
 }

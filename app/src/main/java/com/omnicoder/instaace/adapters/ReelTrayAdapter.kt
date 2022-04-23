@@ -2,24 +2,20 @@ package com.omnicoder.instaace.adapters
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.R
-import com.omnicoder.instaace.model.Story
-import com.omnicoder.instaace.ui.activities.ViewStoryActivity
+import com.omnicoder.instaace.model.ReelTray
 import com.omnicoder.instaace.ui.activities.WatchStoriesActivity
 import com.squareup.picasso.Picasso
 
 
-class ReelTrayAdapter(private val context:Context?, private val dataHolder: List<Story>) : RecyclerView.Adapter<ReelTrayAdapter.MyViewHolder>() {
+class ReelTrayAdapter(private val context:Context?, private val dataHolder: List<ReelTray>, private val cookie: String) : RecyclerView.Adapter<ReelTrayAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -29,12 +25,16 @@ class ReelTrayAdapter(private val context:Context?, private val dataHolder: List
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val story= dataHolder[position]
-        Picasso.get().load(story.profilePicUrl).into(holder.imageView)
-        holder.usernameView.text=story.username
+        val tray= dataHolder[position].user
+        Picasso.get().load(tray.profile_pic_url).into(holder.imageView)
+        holder.usernameView.text=tray.username
         holder.layout.setOnClickListener{
-            context?.startActivity(Intent(context,WatchStoriesActivity::class.java))
+            val intent=Intent(context,WatchStoriesActivity::class.java)
+            intent.putExtra("reelId",tray.pk)
+            intent.putExtra("cookie",cookie)
+            context?.startActivity(intent)
         }
+
     }
 
     override fun getItemCount(): Int {
@@ -43,7 +43,7 @@ class ReelTrayAdapter(private val context:Context?, private val dataHolder: List
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val layout: ConstraintLayout= itemView.findViewById(R.id.constraintLayout)
-        val imageView: ImageView = itemView.findViewById(R.id.imageView)
+        val imageView: ImageView = itemView.findViewById(R.id.profile_pic_view)
         val usernameView: TextView= itemView.findViewById(R.id.username_view)
     }
 
