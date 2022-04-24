@@ -33,5 +33,13 @@
             android:name="cookie"
             app:argType="string"
             />
+        <action
+            android:id="@+id/action_storyFragment_to_searchStoriesActivity"
+            app:destination="@id/searchStoriesActivity" />
     </fragment>
+    <activity
+        android:id="@+id/searchStoriesActivity"
+        android:name="com.omnicoder.instaace.ui.activities.SearchStoriesActivity"
+        android:label="activity_search_stories"
+        tools:layout="@layout/activity_search_stories" />
 </navigation>

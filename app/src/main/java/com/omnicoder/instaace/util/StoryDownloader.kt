@@ -7,6 +7,7 @@ import android.os.Environment
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.database.PostDao
 import com.omnicoder.instaace.model.ReelTray
+import com.omnicoder.instaace.model.SearchUser
 import com.omnicoder.instaace.model.Story
 import com.omnicoder.instaace.network.InstagramAPI
 import java.text.SimpleDateFormat
@@ -79,6 +80,11 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
     suspend fun getReelMedia(reelId: Long,cookie: String): ReelTray?{
         val link=Constants.REEL_MEDIA.format(reelId)
         return instagramAPI.getReelMedia(link,cookie,Constants.USER_AGENT).reels[reelId.toString()]
+    }
+
+    suspend fun searchUsers(query: String,cookie: String):List<SearchUser>{
+        val url= Constants.SEARCH_USER.format(query)
+        return instagramAPI.searchUsers(url,cookie).users
     }
 }
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="2dp">
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_pic_view"
+        android:layout_width="@dimen/search_result_view_user_profile_pic_width_and_height"
+        android:layout_height="@dimen/search_result_view_user_profile_pic_width_and_height"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/circularImageView" />
+
+    <TextView
+        android:id="@+id/username_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto_medium"
+        android:maxLines="1"
+        android:textColor="@color/textcolor"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_pic_view"
+        app:layout_constraintTop_toTopOf="@+id/profile_pic_view" />
+
+    <TextView
+        android:id="@+id/fullNameView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto"
+        android:gravity="start"
+        android:maxLines="3"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_pic_view"
+        app:layout_constraintTop_toBottomOf="@+id/username_view" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.omnicoder.instaace.model.ReelTray
+import com.omnicoder.instaace.model.SearchUser
+import com.omnicoder.instaace.model.Users
 import com.omnicoder.instaace.model.Story
 import com.omnicoder.instaace.repository.InstagramRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +20,7 @@ class StoryViewModel @Inject constructor(private val instagramRepository: Instag
     var reelTray= MutableLiveData<List<ReelTray>>()
     var reelMedia= MutableLiveData<ReelTray?>()
     var downloadId= MutableLiveData<Long>()
+    var searchResult= MutableLiveData<List<SearchUser>>()
 
     fun fetchStory(url: String, map: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,6 +51,12 @@ class StoryViewModel @Inject constructor(private val instagramRepository: Instag
     fun fetchReelMedia(reelId: Long,cookie: String){
         viewModelScope.launch {
             reelMedia.postValue(instagramRepository.fetchReelMedia(reelId, cookie))
+        }
+    }
+
+    fun searchUser(query:String,cookie: String){
+        viewModelScope.launch {
+            searchResult.postValue(instagramRepository.searchUsers(query,cookie))
         }
     }
 

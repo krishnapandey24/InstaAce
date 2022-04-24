@@ -1,10 +1,7 @@
 package com.omnicoder.instaace.network
 
 import com.omnicoder.instaace.model.*
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
-import retrofit2.http.Url
+import retrofit2.http.*
 
 
 interface InstagramAPI {
@@ -13,6 +10,9 @@ interface InstagramAPI {
 
     @GET("{type}/{url}?__a=1")
     suspend fun getDataWithoutLogin(@Path("type") type: String,@Path("url") url:String): Response
+
+    @GET
+    suspend fun searchUsers(@Url url: String, @Header("Cookie") map: String): Users
 
     @GET
     suspend fun getUserId(@Url url :String): UserGraphQL
@@ -25,7 +25,6 @@ interface InstagramAPI {
 
     @GET
     suspend fun getReelMedia(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): ReelMediaResponse
-
 
 
 

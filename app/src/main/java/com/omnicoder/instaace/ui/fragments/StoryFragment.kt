@@ -24,7 +24,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.omnicoder.instaace.adapters.ReelTrayAdapter
+import com.omnicoder.instaace.adapters.ReelTrayViewAdapter
 import com.omnicoder.instaace.adapters.StoryViewAdapter
 import com.omnicoder.instaace.databinding.StoryFragmentBinding
 import com.omnicoder.instaace.model.ReelTray
@@ -151,7 +151,7 @@ class StoryFragment : Fragment() {
     private fun setReelTrayRecyclerView() {
         val recyclerView: RecyclerView = binding.downloadView
         recyclerView.layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-        recyclerView.adapter = ReelTrayAdapter(context,reelTrays,cookies)
+        recyclerView.adapter = ReelTrayViewAdapter(context,reelTrays,cookies)
     }
 
     private fun showDownload(){
@@ -193,7 +193,6 @@ class StoryFragment : Fragment() {
             }
         }
         activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        Log.d("tagg","on Resume called")
     }
 
 
@@ -210,14 +209,6 @@ class StoryFragment : Fragment() {
         super.onPause()
         activity?.unregisterReceiver(onComplete)
         Log.d("tagg","Story Fragment onPause")
-    }
-
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        activity?.unregisterReceiver(onComplete)
-        Log.d("tagg","Story Fragment onDestroyh")
     }
 
 

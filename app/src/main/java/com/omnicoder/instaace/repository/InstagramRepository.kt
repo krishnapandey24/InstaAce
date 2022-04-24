@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.PostDao
 import com.omnicoder.instaace.model.ReelTray
+import com.omnicoder.instaace.model.SearchUser
 import com.omnicoder.instaace.model.Story
+import com.omnicoder.instaace.model.Users
 import com.omnicoder.instaace.util.PostDownloader
 import com.omnicoder.instaace.util.StoryDownloader
 import java.security.cert.Extension
@@ -67,6 +69,9 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
         return storyDownloader.getReelMedia(reelId,cookie)
     }
 
+    suspend fun searchUsers(query: String,cookie: String): List<SearchUser>{
+        return storyDownloader.searchUsers(query, cookie)
+    }
 
 
 

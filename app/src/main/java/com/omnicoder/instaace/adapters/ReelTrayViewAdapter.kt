@@ -10,12 +10,15 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.R
+import com.omnicoder.instaace.di.BaseApplication
 import com.omnicoder.instaace.model.ReelTray
+import com.omnicoder.instaace.ui.activities.SearchStoriesActivity
 import com.omnicoder.instaace.ui.activities.WatchStoriesActivity
+import com.omnicoder.instaace.util.Constants
 import com.squareup.picasso.Picasso
 
 
-class ReelTrayAdapter(private val context:Context?, private val dataHolder: List<ReelTray>, private val cookie: String) : RecyclerView.Adapter<ReelTrayAdapter.MyViewHolder>() {
+class ReelTrayViewAdapter(private val context:Context?, private val dataHolder: List<ReelTray>, private val cookie: String) : RecyclerView.Adapter<ReelTrayViewAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -25,14 +28,24 @@ class ReelTrayAdapter(private val context:Context?, private val dataHolder: List
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val tray= dataHolder[position].user
-        Picasso.get().load(tray.profile_pic_url).into(holder.imageView)
-        holder.usernameView.text=tray.username
-        holder.layout.setOnClickListener{
-            val intent=Intent(context,WatchStoriesActivity::class.java)
-            intent.putExtra("reelId",tray.pk)
-            intent.putExtra("cookie",cookie)
-            context?.startActivity(intent)
+        if(position==0){
+            holder.imageView.setImageResource(R.drawable.ic_search)
+            holder.usernameView.text=Constants.SEARCH
+            holder.layout.setOnClickListener{
+                val intent =Intent(context,SearchStoriesActivity::class.java)
+                intent.putExtra("cookie", cookie)
+                context?.startActivity(intent)
+            }
+        }else {
+            val tray = dataHolder[position].user
+            Picasso.get().load(tray.profile_pic_url).into(holder.imageView)
+            holder.usernameView.text = tray.username
+            holder.layout.setOnClickListener {
+                val intent = Intent(context, WatchStoriesActivity::class.java)
+                intent.putExtra("reelId", tray.pk)
+                intent.putExtra("cookie", cookie)
+                context?.startActivity(intent)
+            }
         }
 
     }

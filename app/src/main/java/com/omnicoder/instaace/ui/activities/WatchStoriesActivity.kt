@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -60,7 +59,6 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
                     binding.stories.resume()
                     Toast.makeText(context,"Download complete", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
         registerReceiver(onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
@@ -72,7 +70,6 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
             if (it != null) {
                 reelTray=it
                 val user = it.user
-                Log.d("tagg","you the items here: ${it.items.size}")
                 Picasso.get().load(user.profile_pic_url).into(binding.profilePicView)
                 binding.usernameView.text=user.username
                 val items=it.items
@@ -143,7 +140,6 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
     private fun changeMedia(reelMedia: ReelMedia, index: Int){
         binding.progressBar.visibility=View.VISIBLE
         if(reelMedia.isImage){
-            Log.d("tagg","it is image ${reelMedia.uri}")
             binding.videoView.visibility = View.GONE
             binding.imageView.visibility= View.VISIBLE
             imageUrl=reelMedia.uri
