@@ -22,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
 import androidx.navigation.Navigation
 import com.omnicoder.instaace.TestActivity
+import com.omnicoder.instaace.adapters.ReelTrayViewAdapter
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
