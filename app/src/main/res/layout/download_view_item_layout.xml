@@ -83,6 +83,7 @@
         android:id="@+id/loadingViewStub"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:elevation="1dp"
         android:layout="@layout/loading_view_stub"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"

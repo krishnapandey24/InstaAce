@@ -3,13 +3,9 @@ package com.omnicoder.instaace.repository
 import androidx.lifecycle.LiveData
 import com.omnicoder.instaace.database.Carousel
 import com.omnicoder.instaace.database.PostDao
-import com.omnicoder.instaace.model.ReelTray
-import com.omnicoder.instaace.model.SearchUser
-import com.omnicoder.instaace.model.Story
-import com.omnicoder.instaace.model.Users
+import com.omnicoder.instaace.model.*
 import com.omnicoder.instaace.util.PostDownloader
 import com.omnicoder.instaace.util.StoryDownloader
-import java.security.cert.Extension
 import javax.inject.Inject
 
 
@@ -36,8 +32,8 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
 
 
 
-    suspend fun fetchStory(url:String, map: String): MutableList<Story>{
-        return storyDownloader.fetchFromUrl(url,map)
+    suspend fun fetchStory(userId: Long, map: String): MutableList<Story>{
+        return storyDownloader.fetchFromUrl(userId,map)
     }
 
     fun directDownload(link:String,path:String,title:String): Long{
@@ -67,6 +63,10 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
 
     suspend fun fetchReelMedia(reelId: Long,cookie: String): ReelTray?{
         return storyDownloader.getReelMedia(reelId,cookie)
+    }
+
+    suspend fun fetchStoryHighlights(userId: Long,cookie: String): List<StoryHighlight>{
+        return storyDownloader.getStoryHighlights(userId,cookie)
     }
 
     suspend fun searchUsers(query: String,cookie: String): List<SearchUser>{

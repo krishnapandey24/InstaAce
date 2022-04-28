@@ -6,9 +6,7 @@ import android.net.Uri
 import android.os.Environment
 import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.database.PostDao
-import com.omnicoder.instaace.model.ReelTray
-import com.omnicoder.instaace.model.SearchUser
-import com.omnicoder.instaace.model.Story
+import com.omnicoder.instaace.model.*
 import com.omnicoder.instaace.network.InstagramAPI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -17,13 +15,13 @@ import javax.inject.Inject
 
 class StoryDownloader @Inject constructor(private val context: Context, private val instagramAPI: InstagramAPI, private val postDao:PostDao) {
     private val formatter= SimpleDateFormat("dd/MM/yyyy",Locale.getDefault())
-     suspend fun fetchFromUrl(storyUrl:String, cookie:String): MutableList<Story>{
+     suspend fun fetchFromUrl(userId: Long, cookie:String): MutableList<Story>{
          val stories= mutableListOf<Story>()
          try {
-             val url = storyUrl.split("?")[0] + Constants.A1
-             val user= instagramAPI.getUserId(url).user
-             val link = Constants.STORY_DOWNLOAD.format(user.id)
-             val items = instagramAPI.getStories(link, cookie, Constants.USER_AGENT).reel.items
+             val link = Constants.STORY_DOWNLOAD.format(userId)
+             val reel= instagramAPI.getStories(link, cookie, Constants.USER_AGENT).reel
+             val items = reel.items
+             val user= reel.user
              for(item in items){
                  stories.add(Story(item.code,item.media_type,item.image_versions2.candidates[0].url, item.video_versions?.get(0)?.url,user.username,user.profile_pic_url, name = null))
              }
@@ -80,6 +78,13 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
     suspend fun getReelMedia(reelId: Long,cookie: String): ReelTray?{
         val link=Constants.REEL_MEDIA.format(reelId)
         return instagramAPI.getReelMedia(link,cookie,Constants.USER_AGENT).reels[reelId.toString()]
+    }
+
+    suspend fun getStoryHighlights(userId: Long,cookie: String): List<StoryHighlight>{
+        val link= Constants.STORY_HIGHLIGHTS.format(userId)
+        return instagramAPI.getStoryHighlights(link,cookie,Constants.USER_AGENT).tray
+
+
     }
 
     suspend fun searchUsers(query: String,cookie: String):List<SearchUser>{

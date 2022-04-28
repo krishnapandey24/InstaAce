@@ -22,10 +22,10 @@ class SearchStoriesActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel= ViewModelProvider(this)[StoryViewModel::class.java]
         binding.usersView.layoutManager=LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        viewModel.searchResult.observe(this){
-            binding.usersView.adapter = StorySearchViewAdapter(this,it)
-        }
         cookie=intent.getStringExtra("cookie") ?: ""
+        viewModel.searchResult.observe(this){
+            binding.usersView.adapter = StorySearchViewAdapter(this,it,cookie)
+        }
         binding.editText.doOnTextChanged { text, _, _, _ ->
             viewModel.searchUser(text.toString(),cookie)
         }

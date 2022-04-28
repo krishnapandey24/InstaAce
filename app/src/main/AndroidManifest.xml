@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaAce">
         <activity
+            android:name=".ui.activities.DownloadStoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.SearchStoriesActivity"
             android:exported="false"
             android:label="@string/title_activity_search_stories"
@@ -38,9 +41,6 @@
             android:name=".TestActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".ui.activities.FirstStartActivity"
-            android:exported="false" />
         <activity
             android:name=".ui.activities.ViewPostActivity"
             android:exported="false"

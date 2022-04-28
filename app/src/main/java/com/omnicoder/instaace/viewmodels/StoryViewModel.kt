@@ -3,10 +3,7 @@ package com.omnicoder.instaace.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.omnicoder.instaace.model.ReelTray
-import com.omnicoder.instaace.model.SearchUser
-import com.omnicoder.instaace.model.Users
-import com.omnicoder.instaace.model.Story
+import com.omnicoder.instaace.model.*
 import com.omnicoder.instaace.repository.InstagramRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,13 +15,14 @@ import javax.inject.Inject
 class StoryViewModel @Inject constructor(private val instagramRepository: InstagramRepository) : ViewModel() {
     var stories= MutableLiveData<MutableList<Story>>()
     var reelTray= MutableLiveData<List<ReelTray>>()
+    var storyHighlights= MutableLiveData<List<StoryHighlight>>()
     var reelMedia= MutableLiveData<ReelTray?>()
     var downloadId= MutableLiveData<Long>()
     var searchResult= MutableLiveData<List<SearchUser>>()
 
-    fun fetchStory(url: String, map: String) {
+    fun fetchStory(userId: Long, map: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            stories.postValue(instagramRepository.fetchStory(url, map))
+            stories.postValue(instagramRepository.fetchStory(userId, map))
         }
     }
 
@@ -51,6 +49,12 @@ class StoryViewModel @Inject constructor(private val instagramRepository: Instag
     fun fetchReelMedia(reelId: Long,cookie: String){
         viewModelScope.launch {
             reelMedia.postValue(instagramRepository.fetchReelMedia(reelId, cookie))
+        }
+    }
+
+    fun fetchStoryHighlights(userId: Long,cookie: String){
+        viewModelScope.launch {
+            storyHighlights.postValue(instagramRepository.fetchStoryHighlights(userId, cookie))
         }
     }
 

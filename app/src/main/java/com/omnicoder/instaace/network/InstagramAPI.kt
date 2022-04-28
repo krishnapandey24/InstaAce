@@ -15,9 +15,6 @@ interface InstagramAPI {
     suspend fun searchUsers(@Url url: String, @Header("Cookie") map: String): Users
 
     @GET
-    suspend fun getUserId(@Url url :String): UserGraphQL
-
-    @GET
     suspend fun getStories(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): StoryResponse
 
     @GET
@@ -25,6 +22,10 @@ interface InstagramAPI {
 
     @GET
     suspend fun getReelMedia(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): ReelMediaResponse
+
+    @GET
+    suspend fun getStoryHighlights(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): StoryHighlightResponse
+
 
 
 

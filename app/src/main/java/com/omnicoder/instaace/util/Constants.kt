@@ -19,5 +19,6 @@ object Constants {
     const val A1="?__a=1"
     const val SEARCH="Search"
     const val SEARCH_USER="https://www.instagram.com/web/search/topsearch/?context=blended&query=%s&rank_token=0.13538577328414725&include_reel=false"
+    const val STORY_HIGHLIGHTS="https://i.instagram.com/api/v1/highlights/%s/highlights_tray/"
 
 }

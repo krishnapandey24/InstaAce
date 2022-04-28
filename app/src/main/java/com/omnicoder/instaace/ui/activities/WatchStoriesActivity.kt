@@ -41,7 +41,7 @@ class WatchStoriesActivity : AppCompatActivity(),StoriesProgressView.StoriesList
         binding = ActivityWatchStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[StoryViewModel::class.java]
-        val reelId: Long=intent.getLongExtra("reelId",0L)
+        val reelId =intent.getLongExtra("reelId",0L)
         val cookie: String=intent.getStringExtra("cookie") ?: ""
         viewModel.fetchReelMedia(reelId,cookie)
         binding.stories.setStoriesListener(this@WatchStoriesActivity)

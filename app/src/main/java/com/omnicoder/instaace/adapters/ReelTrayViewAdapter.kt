@@ -28,24 +28,14 @@ class ReelTrayViewAdapter(private val context:Context?, private val dataHolder: 
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if(position==0){
-            holder.imageView.setImageResource(R.drawable.ic_search)
-            holder.usernameView.text=Constants.SEARCH
-            holder.layout.setOnClickListener{
-                val intent =Intent(context,SearchStoriesActivity::class.java)
-                intent.putExtra("cookie", cookie)
-                context?.startActivity(intent)
-            }
-        }else {
-            val tray = dataHolder[position].user
-            Picasso.get().load(tray.profile_pic_url).into(holder.imageView)
-            holder.usernameView.text = tray.username
-            holder.layout.setOnClickListener {
-                val intent = Intent(context, WatchStoriesActivity::class.java)
-                intent.putExtra("reelId", tray.pk)
-                intent.putExtra("cookie", cookie)
-                context?.startActivity(intent)
-            }
+        val tray = dataHolder[position].user
+        Picasso.get().load(tray.profile_pic_url).into(holder.imageView)
+        holder.usernameView.text = tray.username
+        holder.layout.setOnClickListener {
+            val intent = Intent(context, WatchStoriesActivity::class.java)
+            intent.putExtra("reelId", tray.pk)
+            intent.putExtra("cookie", cookie)
+            context?.startActivity(intent)
         }
 
     }

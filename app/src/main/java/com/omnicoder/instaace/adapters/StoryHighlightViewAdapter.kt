@@ -10,33 +10,31 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.R
-import com.omnicoder.instaace.model.SearchUser
-import com.omnicoder.instaace.ui.activities.DownloadStoryActivity
+import com.omnicoder.instaace.model.StoryHighlight
+import com.omnicoder.instaace.ui.activities.WatchStoriesActivity
 import com.squareup.picasso.Picasso
 
 
-class StorySearchViewAdapter(private val context:Context?, private val dataHolder: List<SearchUser>,private val cookies: String) : RecyclerView.Adapter<StorySearchViewAdapter.MyViewHolder>() {
+class StoryHighlightViewAdapter(private val context:Context?, private val dataHolder: List<StoryHighlight>, private val cookie: String) : RecyclerView.Adapter<StoryHighlightViewAdapter.MyViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.story_search_view_item_layout, parent, false)
+        val view: View = inflater.inflate(R.layout.reel_tray_item_layout, parent, false)
         return MyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val user= dataHolder[position].user
-        Picasso.get().load(user.profile_pic_url).into(holder.imageView)
-        holder.usernameView.text=user.username
-        holder.fullNameView.text=user.full_name
-        holder.layout.setOnClickListener{
-            val intent= Intent(context,DownloadStoryActivity::class.java)
-            intent.putExtra("username",user.username)
-            intent.putExtra("full_name",user.full_name)
-            intent.putExtra("profilePicUrl",user.profile_pic_url)
-            intent.putExtra("userId",user.pk)
-            intent.putExtra("cookie",cookies)
+        val tray = dataHolder[position]
+        Picasso.get().load(tray.cover_media.cropped_image_version.url).into(holder.imageView)
+        holder.usernameView.text = tray.title
+        holder.layout.setOnClickListener {
+            val intent = Intent(context, WatchStoriesActivity::class.java)
+            intent.putExtra("storyHighlightId", tray.id)
+            intent.putExtra("cookie", cookie)
             context?.startActivity(intent)
         }
+
     }
 
     override fun getItemCount(): Int {
@@ -47,7 +45,6 @@ class StorySearchViewAdapter(private val context:Context?, private val dataHolde
         val layout: ConstraintLayout= itemView.findViewById(R.id.constraintLayout)
         val imageView: ImageView = itemView.findViewById(R.id.profile_pic_view)
         val usernameView: TextView= itemView.findViewById(R.id.username_view)
-        val fullNameView: TextView= itemView.findViewById(R.id.fullNameView)
     }
 
 
