@@ -18,6 +18,5 @@ object Constants {
     const val REEL_TRAY="https://i.instagram.com/api/v1/feed/reels_tray/"
     const val SEARCH_USER="https://www.instagram.com/web/search/topsearch/?context=blended&query=%s&rank_token=0.13538577328414725&include_reel=false"
     const val STORY_HIGHLIGHTS="https://i.instagram.com/api/v1/highlights/%s/highlights_tray/"
-    const val DP="https://instagram.com/%s?__a=1"
-
+    const val DP="https://i.instagram.com/api/v1/users/%s/info/"
 }

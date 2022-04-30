@@ -47,7 +47,7 @@ interface PostDao {
     @Query("SELECT * FROM RECENT_TABLE ORDER BY ID DESC LIMIT 10")
     fun getRecentSearch(): List<StoryRecent>
 
-    @Query("SELECT * FROM RECENT_TABLE ORDER BY ID DESC LIMIT 10")
+    @Query("SELECT * FROM DP_RECENT_TABLE ORDER BY ID DESC LIMIT 10")
     fun getRecentDPSearch(): List<DPRecent>
 
 

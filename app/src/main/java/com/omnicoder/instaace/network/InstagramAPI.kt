@@ -27,7 +27,7 @@ interface InstagramAPI {
     suspend fun getStoryHighlights(@Url url: String, @Header("Cookie") map: String, @Header("User-Agent") userAgent:String): StoryHighlightResponse
 
     @GET
-    suspend fun getDP(@Url url: String, @Header("Cookie") map: String): UserResponse
+    suspend fun getDP(@Url url: String, @Header("Cookie",) map: String,@Header("User-Agent") userAgent:String): UserResponse
 
 
 

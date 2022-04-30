@@ -32,7 +32,7 @@ class ViewDPActivity : AppCompatActivity() {
     private var downloadId: Long=0
     private lateinit var loadingDialog: Dialog
     private lateinit var onComplete: BroadcastReceiver
-    private var downloaded= true
+    private var downloaded= false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +42,9 @@ class ViewDPActivity : AppCompatActivity() {
         viewModel= ViewModelProvider(this)[DPViewerViewModel::class.java]
         username= intent.getStringExtra("username") ?: ""
         val cookies= intent.getStringExtra("cookies") ?: ""
-        val cookie="""mid=YmOsoAABAAHg5A7G0UOw2JnSKLNt;  ig_did=86D708E7-0401-4F3B-A833-8D200D0B3708;  ig_nrcb=1;  shbid="9344\05440850856630\0541682235452:01f78ba0194ae84c3805cb0e908e773d689ee2c5757980e1bdeb4591470251f8195c434d";  shbts="1650699452\05440850856630\0541682235452:01f712b285310538dac38dd88604175c398d01e8b82947579e0fc102917f2cfb8d74a1e6";  csrftoken=FJfcgLAS85EHOddNx5CitbTVgoDi883R;  ds_user_id=4614712471;  sessionid=4614712471%3AGvjABTsLCzfTjK%3A19;  rur="PRN\0544614712471\0541682427906:01f77892dcd5150094d39c037e71a63db4e482e31a46ccd29c30989bfe7cded05f6d679c"""
-        viewModel.getDP("mostlysane", cookie)
+        val userId =intent.getLongExtra("userId",0)
+        binding.instaAce.text=username
+        viewModel.getDP(userId, cookies)
         viewModel.profilePicUrl.observe(this){
             profilePicUrl=it
             Picasso.get().load(profilePicUrl).into(binding.imageView,object : Callback {
@@ -78,7 +79,7 @@ class ViewDPActivity : AppCompatActivity() {
             if(downloaded){
                 Toast.makeText(this,"Already Downloaded", Toast.LENGTH_SHORT).show()
             }else{
-                val loadingDialog= Dialog(this)
+                loadingDialog= Dialog(this)
                 loadingDialog.setContentView(R.layout.download_loading_dialog)
                 loadingDialog.setCancelable(false)
                 loadingDialog.show()
@@ -92,7 +93,7 @@ class ViewDPActivity : AppCompatActivity() {
     fun download(){
         val uri: Uri = Uri.parse(profilePicUrl)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
-        val title=username+System.currentTimeMillis()
+        val title=username+"_"+System.currentTimeMillis()+".jpg"
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
         request.setTitle(title)
         request.setDestinationInExternalPublicDir(

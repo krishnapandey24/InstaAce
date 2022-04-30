@@ -13,7 +13,7 @@ data class Candidate(val url: String)
 
 data class Caption(val text: String?)
 
-data class UserResponse(val graphQL: UserGraphQL)
+data class UserResponse(val user: UserInfo)
 
-data class UserGraphQL(val user: HDUser)
+data class UserInfo(val hd_profile_pic_url_info: Candidate)
 

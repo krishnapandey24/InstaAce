@@ -26,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class DPViewerFragment : Fragment() {
     private lateinit var binding: DpViewerFragmentBinding
     private lateinit var viewModel: DPViewerViewModel
+    private lateinit var adapter: StorySearchViewAdapter
     private lateinit var cookies: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -58,13 +59,17 @@ class DPViewerFragment : Fragment() {
     private fun observeData(){
         viewModel.searchResult.observe(viewLifecycleOwner){
             binding.downloadView.layoutManager=LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding.downloadView.adapter = StorySearchViewAdapter(it){ user->
+            adapter = StorySearchViewAdapter(it){ user->
                 val intent= Intent(context, ViewDPActivity::class.java)
                 intent.putExtra("username",user.username)
                 intent.putExtra("cookies",cookies)
+                intent.putExtra("userId",user.pk)
                 context?.startActivity(intent)
                 viewModel.insertRecent(user)
+                adapter.clearData()
+
             }
+            binding.downloadView.adapter=adapter
             binding.searching.visibility=View.GONE
             binding.progressBar.visibility=View.GONE
             if(it.isEmpty()){
@@ -72,7 +77,7 @@ class DPViewerFragment : Fragment() {
             }
         }
 
-        viewModel.resents.observe(viewLifecycleOwner){
+        viewModel.recents.observe(viewLifecycleOwner){
             binding.recentView.adapter= DPRecentViewAdapter(context,it,cookies)
         }
 
@@ -91,8 +96,11 @@ class DPViewerFragment : Fragment() {
 
         binding.cancelButton.setOnClickListener{
             binding.editText.text.clear()
+            adapter.clearData()
+            hideKeyboard()
         }
     }
+
 
 
     private fun Fragment.hideKeyboard() {
@@ -103,6 +111,9 @@ class DPViewerFragment : Fragment() {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
+
+
 
 
 

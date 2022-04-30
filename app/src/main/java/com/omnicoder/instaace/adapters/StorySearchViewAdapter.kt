@@ -1,7 +1,9 @@
 package com.omnicoder.instaace.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +17,7 @@ import com.omnicoder.instaace.model.SearchUser
 import com.squareup.picasso.Picasso
 
 
-class StorySearchViewAdapter(private val dataHolder: List<SearchUser>,private val startIntent: (User) -> Unit) : RecyclerView.Adapter<StorySearchViewAdapter.MyViewHolder>() {
+class StorySearchViewAdapter(private var dataHolder: List<SearchUser>,private val startIntent: (User) -> Unit) : RecyclerView.Adapter<StorySearchViewAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -43,6 +45,13 @@ class StorySearchViewAdapter(private val dataHolder: List<SearchUser>,private va
         val usernameView: TextView= itemView.findViewById(R.id.username_view)
         val fullNameView: TextView= itemView.findViewById(R.id.fullNameView)
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun clearData(){
+        dataHolder= listOf()
+        notifyDataSetChanged()
+    }
+
 
 
 

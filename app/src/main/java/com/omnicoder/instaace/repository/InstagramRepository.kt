@@ -95,8 +95,8 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
         postDao.insertPost(post)
     }
 
-    suspend fun getDP(username: String,cookies: String): String{
-        return profileDownloader.getDP(username, cookies)
+    suspend fun getDP(userId: Long,cookies: String): String{
+        return profileDownloader.getDP(userId, cookies)
     }
 
 

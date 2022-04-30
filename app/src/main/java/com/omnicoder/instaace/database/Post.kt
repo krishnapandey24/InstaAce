@@ -2,6 +2,7 @@ package com.omnicoder.instaace.database
 
 import androidx.room.PrimaryKey
 import androidx.room.Entity
+import androidx.room.Index
 
 @Entity(tableName = "post_table")
 data class Post(
@@ -45,7 +46,7 @@ data class StoryRecent(
     var id: Int = 0
 }
 
-@Entity(tableName="dp_recent_table")
+@Entity(tableName="dp_recent_table",indices = [Index(value = ["username"], unique = true)])
 data class DPRecent(
     val pk: Long,
     val username: String,

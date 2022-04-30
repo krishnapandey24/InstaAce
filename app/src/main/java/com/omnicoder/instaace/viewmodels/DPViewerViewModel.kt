@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class DPViewerViewModel @Inject constructor(private val instagramRepository: InstagramRepository) : ViewModel() {
     var searchResult= MutableLiveData<List<SearchUser>>()
-    var resents= MutableLiveData<List<DPRecent>>()
+    var recents= MutableLiveData<List<DPRecent>>()
     var profilePicUrl= MutableLiveData<String>()
 
 
@@ -35,7 +35,7 @@ class DPViewerViewModel @Inject constructor(private val instagramRepository: Ins
 
     fun getRecentSearches(){
         viewModelScope.launch {
-            resents.postValue(instagramRepository.getRecentDPSearch())
+            recents.postValue(instagramRepository.getRecentDPSearch())
         }
     }
 
@@ -45,9 +45,10 @@ class DPViewerViewModel @Inject constructor(private val instagramRepository: Ins
         }
     }
 
-    fun getDP(username: String, cookies: String){
+    fun getDP(userId: Long, cookies: String){
         viewModelScope.launch {
-            profilePicUrl.postValue(instagramRepository.getDP(username,cookies))
+            val profilePic=instagramRepository.getDP(userId,cookies)
+            profilePicUrl.postValue(profilePic)
         }
     }
 

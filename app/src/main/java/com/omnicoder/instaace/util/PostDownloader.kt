@@ -171,7 +171,7 @@ class PostDownloader @Inject constructor(private val context: Context,private va
                 imageUrl
             }
         }
-        val title=item.owner.username +"_"+System.currentTimeMillis().toString() + extension
+        val title=item.owner.username +"_"+System.currentTimeMillis() + extension
         val caption: String?= if(item.edge_media_to_caption.edges == null) null else item.edge_media_to_caption.edges?.get(0)?.node?.text
         return Post(0,mediaType,item.owner.username,item.owner.profile_pic_url,imageUrl,videoUrl,caption,path,downloadLink,extension,title,null,false)
     }

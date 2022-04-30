@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.R
 import com.omnicoder.instaace.database.DPRecent
-import com.omnicoder.instaace.ui.activities.DownloadStoryActivity
+import com.omnicoder.instaace.ui.activities.ViewDPActivity
 import com.squareup.picasso.Picasso
 
 
@@ -29,7 +29,7 @@ class DPRecentViewAdapter(private val context:Context?, private val dataHolder: 
         holder.usernameView.text=user.username
         holder.fullNameView.text=user.full_name
         holder.layout.setOnClickListener{
-            val intent= Intent(context,DownloadStoryActivity::class.java)
+            val intent= Intent(context,ViewDPActivity::class.java)
             intent.putExtra("username",user.username)
             intent.putExtra("full_name",user.full_name)
             intent.putExtra("profilePicUrl",user.profile_pic_url)
