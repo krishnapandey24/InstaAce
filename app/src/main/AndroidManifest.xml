@@ -23,11 +23,6 @@
             android:name=".ui.activities.DownloadStoryActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.SearchStoriesActivity"
-            android:exported="false"
-            android:label="@string/title_activity_search_stories"
-            android:theme="@style/Theme.InstaAce.NoActionBar" />
-        <activity
             android:name=".ui.activities.WatchStoriesActivity"
             android:exported="false" />
         <activity
@@ -47,6 +42,10 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activities.ViewStoryActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activities.ViewDPActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity

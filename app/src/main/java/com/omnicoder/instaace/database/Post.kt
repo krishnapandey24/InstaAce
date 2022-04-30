@@ -5,16 +5,15 @@ import androidx.room.Entity
 
 @Entity(tableName = "post_table")
 data class Post(
-    @PrimaryKey(autoGenerate = false)
-    val postID: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
     var media_type: Int,
     val username: String,
     val profile_pic_url: String,
     val image_url: String,
     val video_url: String?,
     val caption: String?,
-    val file_url: String?,
-    val in_app_url:String?,
+    val path: String?,
     val downloadLink:String?,
     val extension:String?,
     val title:String?,
@@ -33,6 +32,35 @@ data class Carousel(
     val link: String?,
     val title:String?,
 )
+
+@Entity(tableName="recent_table")
+data class StoryRecent(
+    val pk: Long,
+    val username: String,
+    val full_name: String,
+    val profile_pic_url: String,
+    val userId: String?
+){
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}
+
+@Entity(tableName="dp_recent_table")
+data class DPRecent(
+    val pk: Long,
+    val username: String,
+    val full_name: String,
+    val profile_pic_url: String,
+){
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}
+
+
+
+
+
+
 
 
 

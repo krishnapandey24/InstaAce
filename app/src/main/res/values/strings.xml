@@ -13,8 +13,11 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="edittext_hint"><font size="14">Enter username or paste story url</font></string>
+    <string name="edittext_hint">Enter username or paste story url</string>
+    <string name="dp_hint">Enter username or paste profile url</string>
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="searching">Searching…</string>
+    <string name="download">Download</string>
+    <string name="story_downloader">Story Downloader</string>
 </resources>

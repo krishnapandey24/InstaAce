@@ -20,9 +20,9 @@ import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.content.*
+import android.util.Log
 import androidx.navigation.Navigation
 import com.omnicoder.instaace.TestActivity
-import com.omnicoder.instaace.adapters.ReelTrayViewAdapter
 import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
@@ -67,7 +67,7 @@ open class HomeFragment : Fragment() {
         }
 
         activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-
+        Log.d("tagg","the cookies $cookies")
 
     }
 
@@ -88,6 +88,15 @@ open class HomeFragment : Fragment() {
             } else {
                 Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeToStoryFragment(cookies ?: ""))
             }
+        }
+
+        binding.dpButton.setOnClickListener{
+            if (cookies == null) {
+                startActivity(Intent(context, RequestLoginActivity::class.java))
+            } else {
+                Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeToDPViewerFragment(cookies ?: ""))
+            }
+
         }
 
 

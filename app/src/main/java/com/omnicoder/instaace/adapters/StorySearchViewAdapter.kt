@@ -10,12 +10,12 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.R
+import com.omnicoder.instaace.model.User
 import com.omnicoder.instaace.model.SearchUser
-import com.omnicoder.instaace.ui.activities.DownloadStoryActivity
 import com.squareup.picasso.Picasso
 
 
-class StorySearchViewAdapter(private val context:Context?, private val dataHolder: List<SearchUser>,private val cookies: String) : RecyclerView.Adapter<StorySearchViewAdapter.MyViewHolder>() {
+class StorySearchViewAdapter(private val dataHolder: List<SearchUser>,private val startIntent: (User) -> Unit) : RecyclerView.Adapter<StorySearchViewAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -29,13 +29,7 @@ class StorySearchViewAdapter(private val context:Context?, private val dataHolde
         holder.usernameView.text=user.username
         holder.fullNameView.text=user.full_name
         holder.layout.setOnClickListener{
-            val intent= Intent(context,DownloadStoryActivity::class.java)
-            intent.putExtra("username",user.username)
-            intent.putExtra("full_name",user.full_name)
-            intent.putExtra("profilePicUrl",user.profile_pic_url)
-            intent.putExtra("userId",user.pk)
-            intent.putExtra("cookie",cookies)
-            context?.startActivity(intent)
+            startIntent(user)
         }
     }
 

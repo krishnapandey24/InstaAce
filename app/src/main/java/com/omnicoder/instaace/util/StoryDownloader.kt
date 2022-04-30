@@ -46,7 +46,7 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
         val title="${username}_${currentTime}$extension"
         story.name=title
         val caption="${username}'s story from ${formatter.format(currentTime)}"
-        postDao.insertPost(Post(code,story.mediaType,username,story.profilePicUrl,story.imageUrl,story.videoUrl,caption,null,null,null,extension,title,code,false))
+        postDao.insertPost(Post(0,story.mediaType,username,story.profilePicUrl,story.imageUrl,story.videoUrl,caption,null,null,extension,title,code,false))
         return download(downloadLink,Constants.STORY_FOLDER_NAME,title)
     }
 
@@ -55,7 +55,7 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
         val currentTime= System.currentTimeMillis()
         val title="${username}_${currentTime}$extension"
         val caption="${username}'s story from ${formatter.format(currentTime)}"
-        postDao.insertPost(Post(story.code,story.mediaType,username,story.profilePicUrl,story.imageUrl,story.videoUrl,caption,null,null,null,extension,title,story.code,false))
+        postDao.insertPost(Post(0,story.mediaType,username,story.profilePicUrl,story.imageUrl,story.videoUrl,caption,null,null,extension,title,story.code,false))
         return download(downloadLink,Constants.STORY_FOLDER_NAME,title)
     }
 
@@ -80,11 +80,27 @@ class StoryDownloader @Inject constructor(private val context: Context, private 
         return instagramAPI.getReelMedia(link,cookie,Constants.USER_AGENT).reels[reelId.toString()]
     }
 
+    suspend fun getReelMedia(reelId: String,cookie: String): MutableList<Story>{
+        val stories= mutableListOf<Story>()
+        try {
+            val link=Constants.REEL_MEDIA.format(reelId)
+            val reel: ReelTray?= instagramAPI.getReelMedia(link,cookie,Constants.USER_AGENT).reels[reelId]
+            if(reel!=null) {
+                val items = reel.items
+                val user = reel.user
+                for (item in items) {
+                        stories.add(Story(item.code,item.media_type,item.image_versions2.candidates[0].url,item.video_versions?.get(0)?.url,user.username,user.profile_pic_url,name = null))
+                }
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return stories
+    }
+
     suspend fun getStoryHighlights(userId: Long,cookie: String): List<StoryHighlight>{
         val link= Constants.STORY_HIGHLIGHTS.format(userId)
         return instagramAPI.getStoryHighlights(link,cookie,Constants.USER_AGENT).tray
-
-
     }
 
     suspend fun searchUsers(query: String,cookie: String):List<SearchUser>{

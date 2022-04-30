@@ -1,15 +1,15 @@
 package com.omnicoder.instaace.repository
 
 import androidx.lifecycle.LiveData
-import com.omnicoder.instaace.database.Carousel
-import com.omnicoder.instaace.database.PostDao
+import com.omnicoder.instaace.database.*
 import com.omnicoder.instaace.model.*
 import com.omnicoder.instaace.util.PostDownloader
+import com.omnicoder.instaace.util.ProfileDownloader
 import com.omnicoder.instaace.util.StoryDownloader
 import javax.inject.Inject
 
 
-class InstagramRepository @Inject constructor(private val postDao: PostDao,private val postDownloader: PostDownloader, private val storyDownloader: StoryDownloader){
+class InstagramRepository @Inject constructor(private val postDao: PostDao,private val postDownloader: PostDownloader, private val storyDownloader: StoryDownloader, private val profileDownloader: ProfileDownloader){
     val getAllPost = postDao.getAllPosts()
     val getFileCount= postDao.getFileCount()
 
@@ -29,8 +29,6 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
     fun downloadStoryDirect(story: Story,extension: String, downloadLink: String): Long{
         return storyDownloader.downloadStoryDirect(story,extension, downloadLink)
     }
-
-
 
     suspend fun fetchStory(userId: Long, map: String): MutableList<Story>{
         return storyDownloader.fetchFromUrl(userId,map)
@@ -65,12 +63,40 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
         return storyDownloader.getReelMedia(reelId,cookie)
     }
 
+    suspend fun fetchStoryHighlightsStories(reelId: String,cookie: String): MutableList<Story>{
+        return storyDownloader.getReelMedia(reelId,cookie)
+    }
+
     suspend fun fetchStoryHighlights(userId: Long,cookie: String): List<StoryHighlight>{
         return storyDownloader.getStoryHighlights(userId,cookie)
     }
 
     suspend fun searchUsers(query: String,cookie: String): List<SearchUser>{
         return storyDownloader.searchUsers(query, cookie)
+    }
+
+    fun insertRecent(user: User){
+        postDao.insertRecent(StoryRecent(user.pk,user.username,user.full_name,user.profile_pic_url,null))
+    }
+
+    fun insertDPRecent(user: User){
+        postDao.insertDPRecent(DPRecent(user.pk,user.username,user.full_name,user.profile_pic_url))
+    }
+
+    fun getRecentSearch(): List<StoryRecent>{
+        return postDao.getRecentSearch()
+    }
+
+    fun getRecentDPSearch(): List<DPRecent>{
+        return postDao.getRecentDPSearch()
+    }
+
+    fun insertPost(post: Post){
+        postDao.insertPost(post)
+    }
+
+    suspend fun getDP(username: String,cookies: String): String{
+        return profileDownloader.getDP(username, cookies)
     }
 
 

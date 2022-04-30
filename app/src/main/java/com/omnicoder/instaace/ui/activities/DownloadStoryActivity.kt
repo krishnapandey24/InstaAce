@@ -71,10 +71,17 @@ class DownloadStoryActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[StoryViewModel::class.java]
         cookies=intent.getStringExtra("cookie") ?: ""
         username=intent.getStringExtra("username") ?: ""
+        val showHighlights=intent.getBooleanExtra("showHighlights",true)
         val userId=intent.getLongExtra("userId",0)
+        binding.usernameView.text=username
         binding.progressBar.visibility=View.VISIBLE
-        viewModel.fetchStory(userId,cookies)
-        viewModel.fetchStoryHighlights(userId,cookies)
+        if(showHighlights) {
+            viewModel.fetchStoryHighlights(userId, cookies)
+            viewModel.fetchStory(userId,cookies)
+        }else{
+            val highlightId=intent.getStringExtra("highlightId")?:""
+            viewModel.fetchStoryHighlightsStories(highlightId,cookies)
+        }
         binding.downloadView.layoutManager= GridLayoutManager(this,3)
         binding.storyHighlightView.layoutManager= LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundColor">
 
+
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -23,9 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout="@layout/no_stories_found"
-        app:layout_constraintBottom_toTopOf="@+id/downloadButton"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageButton
@@ -41,10 +44,9 @@
 
 
     <TextView
-        android:id="@+id/InstaAce"
+        android:id="@+id/usernameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Story Downloader"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -57,7 +59,6 @@
         android:id="@+id/storyHighlightView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,13 +88,14 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
-        android:text="Download"
+        android:text="@string/download"
         android:textSize="18sp"
         android:padding="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 
 
 

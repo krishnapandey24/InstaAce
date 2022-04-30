@@ -15,5 +15,5 @@ data class Caption(val text: String?)
 
 data class UserResponse(val graphQL: UserGraphQL)
 
-data class UserGraphQL(val user: User)
+data class UserGraphQL(val user: HDUser)
 

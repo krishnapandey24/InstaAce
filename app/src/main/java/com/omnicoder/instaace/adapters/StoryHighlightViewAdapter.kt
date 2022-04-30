@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.R
 import com.omnicoder.instaace.model.StoryHighlight
+import com.omnicoder.instaace.ui.activities.DownloadStoryActivity
 import com.omnicoder.instaace.ui.activities.WatchStoriesActivity
 import com.squareup.picasso.Picasso
 
@@ -29,9 +30,11 @@ class StoryHighlightViewAdapter(private val context:Context?, private val dataHo
         Picasso.get().load(tray.cover_media.cropped_image_version.url).into(holder.imageView)
         holder.usernameView.text = tray.title
         holder.layout.setOnClickListener {
-            val intent = Intent(context, WatchStoriesActivity::class.java)
-            intent.putExtra("storyHighlightId", tray.id)
+            val intent = Intent(context, DownloadStoryActivity::class.java)
+            intent.putExtra("highlightId", tray.id)
             intent.putExtra("cookie", cookie)
+            intent.putExtra("showHighlights", false)
+            intent.putExtra("username", tray.title)
             context?.startActivity(intent)
         }
 

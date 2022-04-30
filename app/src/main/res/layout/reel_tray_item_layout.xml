@@ -13,8 +13,6 @@
         android:elevation="1dp"
         android:scaleType="centerCrop"
         android:src="@drawable/lisa"
-        app:strokeColor="@color/main"
-        app:strokeWidth="3dp"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

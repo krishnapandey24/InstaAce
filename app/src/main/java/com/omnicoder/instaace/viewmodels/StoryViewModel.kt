@@ -3,6 +3,7 @@ package com.omnicoder.instaace.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.omnicoder.instaace.database.StoryRecent
 import com.omnicoder.instaace.model.*
 import com.omnicoder.instaace.repository.InstagramRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,8 @@ class StoryViewModel @Inject constructor(private val instagramRepository: Instag
     var reelTray= MutableLiveData<List<ReelTray>>()
     var storyHighlights= MutableLiveData<List<StoryHighlight>>()
     var reelMedia= MutableLiveData<ReelTray?>()
+    var recents= MutableLiveData<List<StoryRecent>>()
+//    var storyHighlightsStories= MutableLiveData<MutableList<Story>>()
     var downloadId= MutableLiveData<Long>()
     var searchResult= MutableLiveData<List<SearchUser>>()
 
@@ -52,6 +55,12 @@ class StoryViewModel @Inject constructor(private val instagramRepository: Instag
         }
     }
 
+    fun fetchStoryHighlightsStories(reelId: String,cookie: String){
+        viewModelScope.launch {
+            stories.postValue(instagramRepository.fetchStoryHighlightsStories(reelId, cookie))
+        }
+    }
+
     fun fetchStoryHighlights(userId: Long,cookie: String){
         viewModelScope.launch {
             storyHighlights.postValue(instagramRepository.fetchStoryHighlights(userId, cookie))
@@ -63,5 +72,18 @@ class StoryViewModel @Inject constructor(private val instagramRepository: Instag
             searchResult.postValue(instagramRepository.searchUsers(query,cookie))
         }
     }
+
+    fun insertRecent(user: User){
+        viewModelScope.launch {
+        instagramRepository.insertRecent(user)
+        }
+    }
+
+    fun getRecentSearches(){
+        viewModelScope.launch {
+            recents.postValue(instagramRepository.getRecentSearch())
+        }
+    }
+
 
 }

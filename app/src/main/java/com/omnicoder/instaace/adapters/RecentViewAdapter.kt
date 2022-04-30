@@ -10,31 +10,33 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.R
-import com.omnicoder.instaace.model.ReelTray
-import com.omnicoder.instaace.ui.activities.WatchStoriesActivity
+import com.omnicoder.instaace.database.StoryRecent
+import com.omnicoder.instaace.ui.activities.DownloadStoryActivity
 import com.squareup.picasso.Picasso
 
 
-class ReelTrayViewAdapter(private val context:Context?, private val dataHolder: List<ReelTray>, private val cookie: String) : RecyclerView.Adapter<ReelTrayViewAdapter.MyViewHolder>() {
-
+class RecentViewAdapter(private val context:Context?, private val dataHolder: List<StoryRecent>, private val cookies: String) : RecyclerView.Adapter<RecentViewAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.reel_tray_item_layout, parent, false)
+        val view: View = inflater.inflate(R.layout.story_search_view_item_layout, parent, false)
         return MyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val tray = dataHolder[position].user
-        Picasso.get().load(tray.profile_pic_url).into(holder.imageView)
-        holder.usernameView.text = tray.username
-        holder.layout.setOnClickListener {
-            val intent = Intent(context, WatchStoriesActivity::class.java)
-            intent.putExtra("reelId", tray.pk)
-            intent.putExtra("cookie", cookie)
+        val user= dataHolder[position]
+        Picasso.get().load(user.profile_pic_url).into(holder.imageView)
+        holder.usernameView.text=user.username
+        holder.fullNameView.text=user.full_name
+        holder.layout.setOnClickListener{
+            val intent= Intent(context,DownloadStoryActivity::class.java)
+            intent.putExtra("username",user.username)
+            intent.putExtra("full_name",user.full_name)
+            intent.putExtra("profilePicUrl",user.profile_pic_url)
+            intent.putExtra("userId",user.pk)
+            intent.putExtra("cookie",cookies)
             context?.startActivity(intent)
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -45,6 +47,7 @@ class ReelTrayViewAdapter(private val context:Context?, private val dataHolder: 
         val layout: ConstraintLayout= itemView.findViewById(R.id.constraintLayout)
         val imageView: ImageView = itemView.findViewById(R.id.profile_pic_view)
         val usernameView: TextView= itemView.findViewById(R.id.username_view)
+        val fullNameView: TextView= itemView.findViewById(R.id.fullNameView)
     }
 
 

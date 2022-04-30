@@ -14,6 +14,9 @@
             android:id="@+id/action_home_to_storyFragment"
             app:destination="@id/storyFragment"
             />
+        <action
+            android:id="@+id/action_home_to_DPViewerFragment"
+            app:destination="@id/DPViewerFragment" />
     </fragment>
     <fragment
         android:id="@+id/downloads"
@@ -33,13 +36,15 @@
             android:name="cookie"
             app:argType="string"
             />
-        <action
-            android:id="@+id/action_storyFragment_to_searchStoriesActivity"
-            app:destination="@id/searchStoriesActivity" />
     </fragment>
-    <activity
-        android:id="@+id/searchStoriesActivity"
-        android:name="com.omnicoder.instaace.ui.activities.SearchStoriesActivity"
-        android:label="activity_search_stories"
-        tools:layout="@layout/activity_search_stories" />
+    <fragment
+        android:id="@+id/DPViewerFragment"
+        android:name="com.omnicoder.instaace.ui.fragments.DPViewerFragment"
+        android:label="dp_viewer_fragment"
+        tools:layout="@layout/dp_viewer_fragment" >
+        <argument
+            android:name="cookie"
+            app:argType="string"
+            />
+    </fragment>
 </navigation>
