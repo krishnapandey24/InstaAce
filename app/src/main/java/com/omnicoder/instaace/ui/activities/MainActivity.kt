@@ -19,13 +19,15 @@ import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.omnicoder.instaace.R
 import com.omnicoder.instaace.databinding.ActivityMainBinding
+import com.omnicoder.instaace.ui.fragments.HomeFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HomeFragment.DownloadNavigation{
     private lateinit var binding: ActivityMainBinding
     private var readPermission= false
     private var writePermission= false
+    private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var permissionsLauncher:ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         val navController = findNavController(this, R.id.fragmentContainerView)
-        val bottomNavigationView: BottomNavigationView = binding.activityMainBottomNavigationView
+        bottomNavigationView = binding.activityMainBottomNavigationView
         setupWithNavController(bottomNavigationView, navController)
         onSharedIntent()
         permissionsLauncher= registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
@@ -81,6 +83,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun navigateToDownload() {
+        bottomNavigationView.selectedItemId=R.id.downloads
+    }
+
+
 }
 
 

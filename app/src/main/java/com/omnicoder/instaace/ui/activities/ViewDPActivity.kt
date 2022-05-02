@@ -69,6 +69,7 @@ class ViewDPActivity : AppCompatActivity() {
 
             }
         }
+
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         binding.backButton.setOnClickListener{
@@ -85,9 +86,7 @@ class ViewDPActivity : AppCompatActivity() {
                 loadingDialog.show()
                 download()
             }
-
         }
-
     }
 
     fun download(){

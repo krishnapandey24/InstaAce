@@ -16,8 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val instagramRepository: InstagramRepository) : ViewModel() {
-    val allPosts = instagramRepository.getAllPost
-    val fileCount = instagramRepository.getFileCount
+    val allPosts = instagramRepository.getRecentDownload
     val postExits= MutableLiveData<Boolean>()
     var downloadID= MutableLiveData<MutableList<Long>>()
     var downloadId= MutableLiveData<Long>()

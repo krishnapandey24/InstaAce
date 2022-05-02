@@ -12,9 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.omnicoder.instaace.adapters.DownloadViewAdapter
-import com.omnicoder.instaace.database.Post
 import com.omnicoder.instaace.databinding.HomeFragmentBinding
 import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
@@ -35,6 +33,7 @@ open class HomeFragment : Fragment() {
     private lateinit var onComplete:BroadcastReceiver
     private var size: Int= 0
     private var load: Boolean=false
+    private lateinit var navigation: DownloadNavigation
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
@@ -47,10 +46,11 @@ open class HomeFragment : Fragment() {
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
         cookies= sharedPreferences?.getString("loginCookies",null)
         setOnClickListeners()
+        binding.downloadView.layoutManager=LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
-//            if(cookies!=null) {
-//                checkClipboard()
-//            }
+            if(cookies!=null) {
+                checkClipboard()
+            }
         }
         onComplete= object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -99,7 +99,6 @@ open class HomeFragment : Fragment() {
 
         }
 
-
         binding.downloadButton.setOnClickListener{
             val postLink=binding.editText.text.toString()
             if(isInstagramLink(postLink)){
@@ -110,10 +109,15 @@ open class HomeFragment : Fragment() {
                 Toast.makeText(context, "Invalid Link!", Toast.LENGTH_SHORT).show()
             }
         }
+
         binding.instagramButton.setOnClickListener{
             val intent= Intent(Intent.ACTION_VIEW)
             intent.setPackage("com.instagram.android")
             startActivity(intent)
+        }
+
+        binding.viewAll.setOnClickListener {
+            navigation.navigateToDownload()
         }
 
     }
@@ -139,19 +143,9 @@ open class HomeFragment : Fragment() {
 
     private fun observeData(context: Context?) {
         viewModel.allPosts.observe(viewLifecycleOwner){
-            setRecyclerView(it,context)
+            binding.downloadView.adapter = DownloadViewAdapter(context,it,load)
             size= it.size
         }
-
-        viewModel.fileCount.observe(viewLifecycleOwner){
-            binding.fileCount.text=it.toString()
-            if(it==0){
-                binding.noDownloadsTextView.visibility=View.VISIBLE
-            }else{
-                binding.noDownloadsTextView.visibility=View.INVISIBLE
-            }
-        }
-
 
         viewModel.postExits.observe(viewLifecycleOwner){
             if (it){
@@ -185,18 +179,8 @@ open class HomeFragment : Fragment() {
             val url = link.substring(totalIndex, link.length)
             isInstagramLink=url.length >= 14
         }
-        val isPostLink= link.contains("p") || link.contains("tv") || link.contains("reel")
+        val isPostLink= link.contains("/p/") || link.contains("/tv/") || link.contains("/reel/")
         return isInstagramLink && isPostLink
-    }
-
-    private fun setRecyclerView(posts: List<Post>,context: Context?) {
-        val recyclerView: RecyclerView = binding.downloadView
-        val adapter = DownloadViewAdapter(context,posts,load)
-        val layoutManager= LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
-        layoutManager.stackFromEnd=true
-        recyclerView.layoutManager=layoutManager
-        recyclerView.adapter = adapter
-
     }
 
     private fun Fragment.hideKeyboard() {
@@ -219,6 +203,15 @@ open class HomeFragment : Fragment() {
         super.onResume()
         observeData(context)
 
+    }
+
+    interface DownloadNavigation{
+        fun navigateToDownload()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigation=context as DownloadNavigation
     }
 
 

@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class InstagramRepository @Inject constructor(private val postDao: PostDao,private val postDownloader: PostDownloader, private val storyDownloader: StoryDownloader, private val profileDownloader: ProfileDownloader){
     val getAllPost = postDao.getAllPosts()
-    val getFileCount= postDao.getFileCount()
+    val getRecentDownload = postDao.getRecentDownloads()
 
 
     suspend fun fetchPost(url: String, map: String?): MutableList<Long>{

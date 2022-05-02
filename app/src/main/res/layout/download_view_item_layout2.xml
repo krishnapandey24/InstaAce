@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/white_rectangle"
+    android:elevation="2dp">
+
+
+
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/download_view_post_image_width"
+        android:layout_height="@dimen/download_view_post_image_height"
+        android:src="@drawable/lisa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/mediaTypeIconView"
+        android:layout_width="@dimen/media_type_icon_size"
+        android:layout_height="@dimen/media_type_icon_size"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profile_pic_view"
+        tools:ignore="ContentDescription" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_pic_view"
+        android:layout_width="@dimen/download_view_user_profile_pic_width_and_height"
+        android:layout_height="@dimen/download_view_user_profile_pic_width_and_height"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:elevation="1dp"
+        app:shapeAppearance="@style/circularImageView"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/username_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto_medium"
+        android:maxLines="1"
+        android:textColor="@color/textcolor"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
+        app:layout_constraintEnd_toStartOf="@+id/mediaTypeIconView"
+        app:layout_constraintStart_toEndOf="@+id/profile_pic_view"
+        app:layout_constraintTop_toTopOf="@+id/profile_pic_view" />
+
+    <TextView
+        android:id="@+id/caption_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto"
+        android:gravity="start"
+        android:maxLines="3"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/profile_pic_view" />
+
+    <ImageView
+        android:id="@+id/selector"
+        android:layout_width="@dimen/media_type_icon_size"
+        android:layout_height="@dimen/media_type_icon_size"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/story_not_selected"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

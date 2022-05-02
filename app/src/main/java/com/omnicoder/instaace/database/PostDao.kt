@@ -14,6 +14,9 @@ interface PostDao {
     @Query("SELECT * FROM post_table")
     fun getAllPosts(): LiveData<List<Post>>
 
+    @Query("SELECT * FROM post_table ORDER BY id DESC limit 5")
+    fun getRecentDownloads(): LiveData<List<Post>>
+
     @Query("SELECT COUNT(id) FROM post_table ")
     fun getFileCount(): LiveData<Int>
 

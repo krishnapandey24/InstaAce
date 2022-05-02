@@ -34,7 +34,7 @@ class DPRecentViewAdapter(private val context:Context?, private val dataHolder: 
             intent.putExtra("full_name",user.full_name)
             intent.putExtra("profilePicUrl",user.profile_pic_url)
             intent.putExtra("userId",user.pk)
-            intent.putExtra("cookie",cookies)
+            intent.putExtra("cookies",cookies)
             context?.startActivity(intent)
         }
     }

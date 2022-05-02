@@ -1,11 +1,14 @@
 package com.omnicoder.instaace
 
+import android.content.ContentUris
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.omnicoder.instaace.util.Constants
+import com.omnicoder.instaace.util.sdk29AndUp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,5 +64,31 @@ class TestActivity : AppCompatActivity() {
 
 
 
+    }
+
+    fun fetchPosts(){
+        val collection = sdk29AndUp {
+            MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        } ?: MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.Video.Media._ID)
+        val selection = "${MediaStore.Video.Media.BUCKET_DISPLAY_NAME} == ?"
+        val selectionArgs = arrayOf("Instagram Videos")
+        contentResolver?.query(
+            collection,
+            projection,
+            selection,
+            selectionArgs,
+            "${MediaStore.Images.Media.DISPLAY_NAME} ASC"
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+            var count=0
+            Log.d("tagg","Starting count")
+            while(cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
+                val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                Log.d("tagg","$id $contentUri $count")
+                count+=1
+            }
+        }
     }
 }
