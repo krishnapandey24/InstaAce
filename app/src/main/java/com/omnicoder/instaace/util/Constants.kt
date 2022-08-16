@@ -19,4 +19,6 @@ object Constants {
     const val SEARCH_USER="https://www.instagram.com/web/search/topsearch/?context=blended&query=%s&rank_token=0.13538577328414725&include_reel=false"
     const val STORY_HIGHLIGHTS="https://i.instagram.com/api/v1/highlights/%s/highlights_tray/"
     const val DP="https://i.instagram.com/api/v1/users/%s/info/"
+    const val SHORTCODE_CHARACTERS="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+    const val PRIVATE_POST_URL="https://www.instagram.com/p/%s/?__a=1&__d=dis"
 }

@@ -2,6 +2,7 @@ package com.omnicoder.instaace.ui.fragments
 
 import android.app.Activity
 import android.app.DownloadManager
+import android.content.*
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,17 +12,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.omnicoder.instaace.R
+import com.omnicoder.instaace.TestActivity
 import com.omnicoder.instaace.adapters.DownloadViewAdapter
 import com.omnicoder.instaace.databinding.HomeFragmentBinding
 import com.omnicoder.instaace.ui.activities.InstagramLoginActivity
+import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 import com.omnicoder.instaace.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.content.*
-import android.util.Log
-import androidx.navigation.Navigation
-import com.omnicoder.instaace.TestActivity
-import com.omnicoder.instaace.ui.activities.RequestLoginActivity
 
 
 @AndroidEntryPoint
@@ -46,6 +48,8 @@ open class HomeFragment : Fragment() {
         val sharedPreferences = activity?.getSharedPreferences("Cookies", 0)
         cookies= sharedPreferences?.getString("loginCookies",null)
         setOnClickListeners()
+
+
         binding.downloadView.layoutManager=LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         view.viewTreeObserver?.addOnWindowFocusChangeListener {
             if(cookies!=null) {
@@ -58,7 +62,7 @@ open class HomeFragment : Fragment() {
                 downloadID.remove(id)
                 if(downloadID.isEmpty()){
                     binding.progressBar.visibility= View.GONE
-                    val downloadViewHolder= binding.downloadView.findViewHolderForAdapterPosition(size-1) as DownloadViewAdapter.MyViewHolder?
+                    val downloadViewHolder= binding.downloadView.findViewHolderForAdapterPosition(0) as DownloadViewAdapter.MyViewHolder?
                     downloadViewHolder?.loadingViewStub?.visibility= View.GONE
                     downloadViewHolder?.layout?.isClickable=true
                 }
@@ -67,9 +71,8 @@ open class HomeFragment : Fragment() {
         }
 
         activity?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        Log.d("tagg","the cookies $cookies")
-
     }
+
 
     private fun setOnClickListeners(){
         binding.backButton.setOnClickListener{
@@ -124,7 +127,11 @@ open class HomeFragment : Fragment() {
 
     private fun download(link:String){
         binding.progressBar.visibility= View.VISIBLE
-        viewModel.downloadPost(link,cookies)
+        if(cookies==null){
+            startActivity(Intent(context, RequestLoginActivity::class.java))
+        }else{
+            viewModel.downloadPost(link, cookies!!)
+        }
         binding.editText.text.clear()
         load=true
     }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="animeListTabsText">
+        <item>Watching</item>
+        <item>Plan To Watch</item>
+        <item>On Hold</item>
+        <item>Dropped</item>
+        <item>Completed</item>
+    </string-array>
+</resources>

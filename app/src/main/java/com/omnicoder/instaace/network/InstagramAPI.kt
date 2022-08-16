@@ -5,11 +5,11 @@ import retrofit2.http.*
 
 
 interface InstagramAPI {
-    @GET("{type}/{url}?__a=1")
-    suspend fun getData(@Path("type") type: String,@Path("url") url:String, @Header("Cookie") map :String): InstagramResponse
+    @GET("media/{mediaId}/info")
+    suspend fun getData(@Path("mediaId") mediaId: Long, @Header("Cookie") map :String,@Header("User-Agent") userAgent:String): InstagramResponse
 
-    @GET("{type}/{url}?__a=1")
-    suspend fun getDataWithoutLogin(@Path("type") type: String,@Path("url") url:String): Response
+    @GET
+    suspend fun getData(@Url url: String, @Header("Cookie") map :String,@Header("User-Agent") userAgent:String): InstagramResponse
 
     @GET
     suspend fun searchUsers(@Url url: String, @Header("Cookie") map: String): Users

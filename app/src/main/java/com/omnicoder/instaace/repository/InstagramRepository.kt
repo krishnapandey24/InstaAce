@@ -14,17 +14,14 @@ class InstagramRepository @Inject constructor(private val postDao: PostDao,priva
     val getRecentDownload = postDao.getRecentDownloads()
 
 
-    suspend fun fetchPost(url: String, map: String?): MutableList<Long>{
-        return if(map!=null){
-            postDownloader.fetchDownloadLink(url,map)
-        }else{
-            postDownloader.fetchDownloadLink2(url)
-        }
+    suspend fun fetchPost(url: String, map: String): MutableList<Long>{
+        return postDownloader.fetchDownloadLink(url,map)
     }
 
     fun downloadStory(story: Story): Long{
         return storyDownloader.downloadStory(story)
     }
+
 
     fun downloadStoryDirect(story: Story,extension: String, downloadLink: String): Long{
         return storyDownloader.downloadStoryDirect(story,extension, downloadLink)

@@ -53,9 +53,10 @@ class DownloadViewAdapter( private val context:Context?,private val dataHolder: 
         }
         holder.usernameView.text = post.username
         holder.captionView.text = post.caption
-        if(load && position==size-1){
+        if(load && position==0){
             holder.loadingViewStub.inflate()
             holder.layout.isClickable=false
+            holder.profilePicView.elevation= 0F
         }
     }
 

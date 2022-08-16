@@ -25,7 +25,7 @@ object NetworkModule {
     @Singleton
     fun provideInstagramAPI(): InstagramAPI{
         return Retrofit.Builder()
-            .baseUrl("https://www.instagram.com/")
+            .baseUrl("https://i.instagram.com/api/v1/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(InstagramAPI::class.java)
