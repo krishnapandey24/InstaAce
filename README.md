@@ -32,9 +32,5 @@ InstaAce is a **feature-rich Instagram media downloader** that allows users to d
 ![Explore Anime   Manga (2)](https://github.com/user-attachments/assets/7965806e-af28-4c55-81dc-6b8d22019a0e)
 ![Explore Anime   Manga (3)](https://github.com/user-attachments/assets/ea847a43-35e9-4445-b604-8a6bf52cb5dd)
 
-| Home | Download | Profile |
-|------|---------|---------|
-| ![Screenshot1](screenshot1.png) | ![Screenshot2](screenshot2.png) | ![Screenshot3](screenshot3.png) |
-
 🌟 **If you like this project, don't forget to star the repo!** 🌟
 
